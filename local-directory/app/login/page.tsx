@@ -1,16 +1,26 @@
 'use client';
-import {useState} from "react";
+import {useState, useEffect} from "react";
+import BusinessSkeleton from "@/app/BusinessSkeleton";
 
 export default function loginPage () {
     const [auth, setAuth] = useState('login');
+    const [mounted, setMounted] = useState(false);
 
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // 2. The Skeleton State
+    if (!mounted) {
+        return <BusinessSkeleton />;
+    }
     const handleChange = (display: string) => {
         setAuth(display);
     }
 
     return (
-        <div suppressHydrationWarning className={'flex justify-center bg-charcoal '}>
-            <div className={'flex flex-row h-[500px] w-[900px] bg-charcoal'}>
+        <div suppressHydrationWarning className={'flex justify-center bg-charcoal'}>
+            <div className={'flex flex-row w-[900px] bg-charcoal'}>
                 <div style={{backgroundImage: `url(/images/pool.webp)`}}
                      className={'flex items-center justify-center w-[550px] bg-center bg-cover bg-no-repeat'}>
                     <div className={'p-8 max-w-7xl'}>
@@ -32,13 +42,57 @@ export default function loginPage () {
                                 <input type={"radio"} onChange={() => handleChange('register')} name={'auth'} value={'register'} className={'hidden w-0'}/>
                             </label>
                         </div>
-                        {auth === 'login' && (
-                            <div className={'text-white'}>
-                                <div className={'flex flex-col'}>
-                                    <label>Email</label>
-                                    <input type={'text'} className={'border border-white p-2 rounded-2xl'}/>
+                        {auth === 'login' ? (
+                            <form className={'text-white space-y-5'}>
+                                <div className={'space-y-2'}>
+                                    <label className={'text-sm font-medium inline-block ml-1'}>Email Address</label>
+                                    <input type={'email'} placeholder={'name@example.com'}
+                                           className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'}/>
                                 </div>
-                            </div>
+                                <div className={'space-y-2'}>
+                                    <div className={'flex items-center justify-between'}>
+                                        <label className={'text-sm font-medium inline-block ml-1'}>
+                                            Password
+                                        </label>
+                                        <a href={'/'} className={'text-xs hover:underline font-medium text-secondary-dark'}>Forgot Password</a>
+                                    </div>
+                                    <input type={'password'} placeholder={'password'}
+                                           className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'}/>
+                                </div>
+                                <button type={'submit'} className={'bg-secondary-dark rounded-full w-full text-black py-4 text-lg font-bold mt-4'}>Sign In</button>
+                            </form>
+                        ) : (
+                            <form className={'text-white space-y-5'}>
+                                <div className={'flex justify-between gap-4'}>
+                                    <div className={'space-y-2'}>
+                                        <label className={'text-sm font-medium inline-block ml-1'}>First Name</label>
+                                        <input type={'text'} placeholder={'First Name'}
+                                               className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'}/>
+                                    </div>
+                                    <div className={'space-y-2'}>
+                                        <label className={'text-sm font-medium inline-block ml-1'}>Last Name</label>
+                                        <input type={'text'} placeholder={'Last Name'}
+                                               className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'}/>
+                                    </div>
+                                </div>
+
+                                <div className={'space-y-2'}>
+                                    <label className={'text-sm font-medium inline-block ml-1'}>Email Address</label>
+                                    <input type={'email'} placeholder={'name@example.com'}
+                                           className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'}/>
+                                </div>
+                                <div className={'space-y-2'}>
+                                    <div className={'flex items-center justify-between'}>
+                                        <label className={'text-sm font-medium inline-block ml-1'}>
+                                            Password
+                                        </label>
+                                        {/*<a href={'/'} className={'text-xs hover:underline font-medium text-secondary-dark'}>Forgot Password</a>*/}
+                                    </div>
+                                    <input type={'password'}
+                                           className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'}/>
+                                </div>
+                                <button type={'submit'} className={'bg-secondary-dark rounded-full w-full text-black py-4 text-lg font-bold mt-4'}>Sign In</button>
+                            </form>
                         )}
                     </div>
                 </div>
