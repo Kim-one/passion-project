@@ -1,10 +1,12 @@
 'use client';
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import BusinessSkeleton from "@/app/BusinessSkeleton";
+import {useRouter} from "next/navigation";
 
-export default function loginPage () {
+export default function LoginPage () {
     const [auth, setAuth] = useState('login');
     const [mounted, setMounted] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         setMounted(true);
@@ -14,8 +16,14 @@ export default function loginPage () {
     if (!mounted) {
         return <BusinessSkeleton />;
     }
-    const handleChange = (display: string) => {
+    const handleToggle = (display: string) => {
         setAuth(display);
+    }
+
+    const handleSubmit = (e: React.FormEvent, destination: string) => {
+        e.preventDefault();
+
+        router.push(`/${destination}`);
     }
 
     return (
@@ -24,7 +32,7 @@ export default function loginPage () {
                 <div style={{backgroundImage: `url(/images/pool.webp)`}}
                      className={'flex items-center justify-center w-[550px] bg-center bg-cover bg-no-repeat'}>
                     <div className={'p-8 max-w-7xl'}>
-                        <p className={'text-white text-5xl font-bold'}>Experience the heart of Jamaica.</p>
+                        <p className={'text-white text-6xl font-bold'}>Experience the heart of Jamaica.</p>
                         <p className={'text-white text-sm font-semibold'}>Discover the island's best kept secrets, from roadside jerk stands to hidden turquoise lagoon.</p>
                     </div>
                 </div>
@@ -35,15 +43,15 @@ export default function loginPage () {
                         <div className={'flex items-center justify-center bg-charcoal rounded-full w-[400px] h-12 p-1'}>
                             <label className={`${auth === 'login' ? 'bg-[#2a2a2a]' : ''} flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-2 text-white/50 text-sm font-medium`}>
                                 <span>Login</span>
-                                <input type={'radio'} onChange={() => handleChange('login')} className={'hidden w-0'} name={'auth'} value={'login'}/>
+                                <input type={'radio'} onChange={() => handleToggle('login')} className={'hidden w-0'} name={'auth'} value={'login'}/>
                             </label>
                             <label className={`${auth === 'register' ? 'bg-[#2a2a2a]' : ''} flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-full px-2 text-white/50 text-sm font-medium`}>
                                 <span>Register</span>
-                                <input type={"radio"} onChange={() => handleChange('register')} name={'auth'} value={'register'} className={'hidden w-0'}/>
+                                <input type={"radio"} onChange={() => handleToggle('register')} name={'auth'} value={'register'} className={'hidden w-0'}/>
                             </label>
                         </div>
                         {auth === 'login' ? (
-                            <form className={'text-white space-y-5'}>
+                            <form className={'text-white space-y-5'} onSubmit={(e) => handleSubmit(e, 'userProfile')}>
                                 <div className={'space-y-2'}>
                                     <label className={'text-sm font-medium inline-block ml-1'}>Email Address</label>
                                     <input type={'email'} placeholder={'name@example.com'}
@@ -62,7 +70,7 @@ export default function loginPage () {
                                 <button type={'submit'} className={'bg-secondary-dark rounded-full w-full text-black py-4 text-lg font-bold mt-4'}>Sign In</button>
                             </form>
                         ) : (
-                            <form className={'text-white space-y-5'}>
+                            <form className={'text-white space-y-5'} onSubmit={(e) => {e.preventDefault();handleToggle('login')}}>
                                 <div className={'flex justify-between gap-4'}>
                                     <div className={'space-y-2'}>
                                         <label className={'text-sm font-medium inline-block ml-1'}>First Name</label>
@@ -75,7 +83,11 @@ export default function loginPage () {
                                                className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'}/>
                                     </div>
                                 </div>
-
+                                <div className={'space-y-2'}>
+                                    <label className={'font-medium text-sm inline-block ml-1'}>Address</label>
+                                    <input type={'text'} placeholder={'Parish, Country'}
+                                           className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'}/>
+                                </div>
                                 <div className={'space-y-2'}>
                                     <label className={'text-sm font-medium inline-block ml-1'}>Email Address</label>
                                     <input type={'email'} placeholder={'name@example.com'}
@@ -86,12 +98,12 @@ export default function loginPage () {
                                         <label className={'text-sm font-medium inline-block ml-1'}>
                                             Password
                                         </label>
-                                        {/*<a href={'/'} className={'text-xs hover:underline font-medium text-secondary-dark'}>Forgot Password</a>*/}
                                     </div>
                                     <input type={'password'}
                                            className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'}/>
                                 </div>
-                                <button type={'submit'} className={'bg-secondary-dark rounded-full w-full text-black py-4 text-lg font-bold mt-4'}>Sign In</button>
+                                <button type={'submit'}
+                                        className={'bg-secondary-dark rounded-full w-full text-black py-4 text-lg font-bold mt-4'}>Register</button>
                             </form>
                         )}
                     </div>
