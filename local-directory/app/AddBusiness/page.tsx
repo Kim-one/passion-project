@@ -1,4 +1,67 @@
+'use client';
+import React, {useState} from "react";
+import axios from "axios";
+import {useRouter} from "next/navigation";
+
+const api = axios.create({
+    baseURL: 'http://localhost:8000',
+    withCredentials: true,
+    headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json',
+    }
+});
+
+api.interceptors.request.use((config) => {
+    const token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('XSRF-TOKEN='))
+        ?.split('=')[1];
+    if (token) {
+        config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
+    }
+    return config;
+});
+
 const AddBusiness = () => {
+    const router = useRouter();
+    const [formData, setFormData] = useState({
+        businessName: '',
+        category: '',
+        description: '',
+        streetAddress: '',
+        parish: '',
+        city: '',
+    })
+
+    const [error, setError] = useState('')
+
+    const handleCreateBusiness = async (e: React.SubmitEvent) => {
+        e.preventDefault();
+        console.log('You entered: ', formData);
+
+        try{
+            await api.get('/sanctum/csrf-cookie');
+            const response = await api.post('/api/businesses', formData);
+            console.log(response.data);
+            router.push('/userProfile');
+            // console.log('You entered: ', formData);
+            // const response = await axios.post('http://localhost:8000/api/createBusiness', formData);
+            // console.log(response.data);
+        } catch(err: any){
+            console.log(err);
+            setError(err.response?.data?.message);
+        }
+    };
+
+    const handleChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+    };
+
     return (
         <div suppressHydrationWarning className={'bg-charcoal h-screen flex flex-col items-center overflow-y-auto'}>
             <div className={'flex flex-col  items-center'}>
@@ -9,15 +72,21 @@ const AddBusiness = () => {
                         Showcase your venture to thousands of residents and visitors across the island.
                     </p>
                 </div>
-                <div className={'flex flex-col bg-surface-form-light text-white gap-6 p-10 border border-surface-dark w-[800px] rounded-2xl'}>
+                <form onSubmit={handleCreateBusiness}
+                    className={'flex flex-col bg-surface-form-light text-white gap-6 p-10 border border-surface-dark w-[800px] rounded-2xl'}>
                     <div className={'flex justify-between'}>
                         <div className={'flex flex-col gap-2 w-[350px]'}>
                             <label className={'uppercase font-semibold text-sm'}>Business Name</label>
-                            <input type={'text'} placeholder={'e.g. Blue Mountain Cafe'} className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
+                            <input type={'text'} name={'businessName'} value={formData.businessName}
+                                   onChange={handleChange}
+                                   placeholder={'e.g. Blue Mountain Cafe'} className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
+                            <p>{error}</p>
                         </div>
                         <div className={'flex flex-col gap-2 w-[350px]'}>
                             <label className={'uppercase font-semibold text-sm'}>Category</label>
-                            <input type={'text'} placeholder={'Choose a Category'} className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
+                            <input type={'text'} name={'category'} value={formData.category}
+                                   onChange={handleChange}
+                                   placeholder={'Choose a Category'} className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
                         </div>
                     </div>
                     <div className={'flex flex-col gap-2'}>
@@ -25,21 +94,32 @@ const AddBusiness = () => {
                             THE STORY
                             <span className={'text-xs lowercase'}>Tell your unique tale</span>
                         </label>
-                        <textarea className={'border border-[#564f39] rounded-3xl w-full p-3 resize-none h-[150px]'}
+                        <textarea name={'description'} value={formData.description} onChange={handleChange}
+                                  className={'border border-[#564f39] rounded-3xl w-full p-3 resize-none h-[150px]'}
                                   placeholder={'Tell us the heart of your business story...What makes your place special?'}></textarea>
                     </div>
-                    <div className={'flex flex-row gap-2'}>
+                    <div className={'flex flex-row gap-4'}>
                         <div className={'flex flex-col gap-2 w-[450px]'}>
                             <label className={'uppercase font-semibold text-sm'}>
                                 Location Address
                             </label>
-                            <input type={"text"} placeholder={'Street Address, building name'}
+                            <input type={"text"} name={'streetAddress'} value={formData.streetAddress} onChange={handleChange}
+                                   placeholder={'Street Address, building name'}
                                    className={'border border-[#564f39] p-3 w-full rounded-3xl'}
                             />
+                        </div>
+                        <div className={'flex flex-col gap-2 w-[200px]'}>
+                            <label className={'uppercase font-semibold text-sm'}>City</label>
+                            <input type={'text'} name={'city'} value={formData.city}
+                                   onChange={handleChange}
+                                   placeholder={'e.g. Kingston'}
+                                   className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
                         </div>
                         <div className={'flex flex-col gap-2 w-[330px]'}>
                             <label className={'uppercase text-sm font-semibold'}>Parish</label>
                             <input type={'text'} placeholder={'Choose a Parish'}
+                                   name={'parish'} value={formData.parish}
+                                   onChange={handleChange}
                                    className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
                         </div>
                     </div>
@@ -66,13 +146,14 @@ const AddBusiness = () => {
                             <p>I agree to local business community guidelines</p>
                         </div>
                         <div className={'w-[210px]'}>
-                            <button className={'w-full flex items-center justify-center bg-secondary-dark rounded-full text-black font-black text-lg h-14'}>
+                            <button type={'submit'}
+                                    className={'w-full flex items-center justify-center bg-secondary-dark rounded-full text-black font-black text-lg h-14 cursor-pointer hover:scale-105'}>
                                 Submit for Review
                                 <span className="material-symbols-outlined">arrow_right_alt</span>
                             </button>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     )

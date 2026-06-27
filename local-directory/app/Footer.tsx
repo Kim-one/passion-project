@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const  Footer = () => {
     return (
         <div className={'flex flex-row justify-between items-center bg-background-dark border-t border-t-white/2 py-10 px-5'}>
@@ -6,10 +8,10 @@ const  Footer = () => {
                 <p className={'text-slate-500 text-sm'}>© 2026 876Explore. ALL rights reserved.</p>
             </div>
             <div className={'flex gap-8 text-sm font bold'}>
-                <a className={'text-slate-400 '} href={'/about'}>About Us</a>
-                <a className={'text-slate-400 '} href={'/about'}>Privacy Policy</a>
-                <a className={'text-slate-400 '} href={'/about'}>Terms of Service</a>
-                <a className={'text-slate-400 '} href={'/about'}>Contact</a>
+                <Link className={'text-slate-400 '} href={'/about'}>About Us</Link>
+                <Link className={'text-slate-400 '} href={'/about'}>Privacy Policy</Link>
+                <Link className={'text-slate-400 '} href={'/about'}>Terms of Service</Link>
+                <Link className={'text-slate-400 '} href={'/about'}>Contact</Link>
             </div>
         </div>
     )

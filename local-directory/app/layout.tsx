@@ -4,8 +4,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "@/app/Footer";
 import NavBar from "@/app/NavBar";
-import {useEffect, useState} from "react";
-import BusinessSkeleton from "@/app/BusinessSkeleton";
+import {AuthProvider} from "@/app/context/ContextAuth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,16 +36,19 @@ export default function RootLayout({
     <head>
         <link
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0"
         />
+        {/*<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&icon_names=person" />*/}
         <title>876 Explore</title>
     </head>
       <body suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <NavBar/>
-        {children}
-      <Footer/>
+      <AuthProvider>
+          <NavBar/>
+          {children}
+          <Footer/>
+      </AuthProvider>
       </body>
     </html>
   );

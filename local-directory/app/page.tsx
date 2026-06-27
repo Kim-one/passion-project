@@ -1,5 +1,6 @@
 import {Categories} from "@/app/Categories";
 import {LocalGems} from "@/app/LocalGems";
+import Link from "next/link";
 
 export default function HomePage () {
     return (
@@ -41,9 +42,9 @@ export default function HomePage () {
                     <h1 className={'text-white font-bold text-3xl'}>Explore By Category</h1>
                     <div className={'flex justify-between'}>
                         <p className={'text-slate-300 text-sm'}>Everything from street food to luxury stays</p>
-                        <a className={'flex items-center cursor-pointer text-secondary-dark text-sm font-bold'} href={'/Categories'}>
+                        <Link className={'flex items-center cursor-pointer text-secondary-dark text-sm font-bold'} href={'/Categories'}>
                             View All <span
-                            className="material-symbols-outlined">chevron_right</span></a>
+                            className="material-symbols-outlined">chevron_right</span></Link>
                     </div>
                     <div className={'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'}>
                         {Categories.slice(0,4).map(category => (
