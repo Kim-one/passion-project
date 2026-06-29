@@ -25,7 +25,7 @@ interface Business {
 }
 export default function UserProfile() {
     const {user, logout} = useAuth();
-    const [activeTab, setActiveTab] = useState('Saved');
+    const [activeTab, setActiveTab] = useState('business');
     const [business, setBusiness] = useState<Business[]>([]);
     const [loadingBusinesses, setLoadingBusinesses] = useState(false);
 
