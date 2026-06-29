@@ -2,7 +2,7 @@
 import {api} from '@/app/context/ContextAuth'
 import {useEffect, useState} from "react";
 import {Business} from "@/app/Business";
-const Categories = ({params}: {params: Promise<string>}) => {
+const Categories = ({params}: {params: Promise<{ category: string }>}) => {
     const [businesses, setBusinesses]=useState<Business[]>([]);
 
     useEffect(() => {
