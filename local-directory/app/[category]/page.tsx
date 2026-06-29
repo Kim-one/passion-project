@@ -2,13 +2,15 @@
 import {api} from '@/app/context/ContextAuth'
 import {useEffect, useState} from "react";
 import {Business} from "@/app/Business";
-const Categories = ({params}: {params: Promise<{ category: string }>}) => {
+const Categories = ({params}: { params: { category: string }}) => {
     const [businesses, setBusinesses]=useState<Business[]>([]);
 
     useEffect(() => {
         const fetchBusiness = async () => {
             try {
-                const response = await api.get(`api/businesses/${params}`);
+                const response = await api.get(`api/businesses/`, {
+                    params: params.category
+                });
                 setBusinesses(response.data);
                 console.log(response.data);
             } catch (err) {
@@ -16,7 +18,7 @@ const Categories = ({params}: {params: Promise<{ category: string }>}) => {
             }
         }
         fetchBusiness();
-    }, [params]);
+    }, [params.category]);
 
     return (
         <div className={'bg-charcoal text-white'}>
