@@ -49,7 +49,7 @@ export default function LoginPage () {
         const submissionData = mode === 'login' ? loginData : registrationData;
 
         // Match up with Laravel configuration
-        const modeURL = mode === 'login' ? 'api/login' : 'api/register';
+        const modeURL = mode === 'login' ? '/api/login' : '/api/register';
 
         try {
             const response = await api.post(modeURL, submissionData);
