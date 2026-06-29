@@ -7,7 +7,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import {useRouter} from "next/navigation";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: 'https://web-production-0fb7e.up.railway.app',
     withCredentials: true,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',

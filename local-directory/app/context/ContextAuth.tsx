@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: 'https://web-production-0fb7e.up.railway.app',
     withCredentials: true,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',

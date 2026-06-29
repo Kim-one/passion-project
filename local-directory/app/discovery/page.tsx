@@ -9,7 +9,7 @@ import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: 'https://web-production-0fb7e.up.railway.app',
     withCredentials: true,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
@@ -165,7 +165,7 @@ const Discoveries = () => {
                         <article key={item.id} className={'group relative flex flex-col rounded-xl overflow-hidden border border-white/5 hover:border-secondary-dark/50 transition-all hover:translate-y-[4px]'}>
                             <div className={'relative h-64 w-full overflow-hidden'}>
                                 <div className={'absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110'}
-                                     style={{backgroundImage: `url(http://localhost:8000/storage/${item.images[0].path})`}}></div>
+                                     style={{backgroundImage: `url(https://web-production-0fb7e.up.railway.app/storage/${item.images[0].path})`}}></div>
                                 <div className={'absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-80'}></div>
                                 <div className={'absolute top-4 left-4 bg-secondary-dark text-background-dark text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-tighter'}>
                                     {item.featured &&(<p>Featured</p>)}

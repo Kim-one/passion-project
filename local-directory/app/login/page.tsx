@@ -49,12 +49,12 @@ export default function LoginPage () {
 
         // Match up with Laravel configuration
         const modeURL = mode === 'login'
-            ? 'http://localhost:8000/login'
-            : 'http://localhost:8000/api/register';
+            ? 'https://web-production-0fb7e.up.railway.app/login'
+            : 'https://web-production-0fb7e.up.railway.app/api/register';
 
         try {
             // 1. Fetch cookie (Always do this before a state-changing POST request)
-            await axios.get('http://localhost:8000/sanctum/csrf-cookie');
+            await axios.get('https://web-production-0fb7e.up.railway.app/sanctum/csrf-cookie');
 
             // 2. Execute Auth request
             const response = await axios.post(modeURL, submissionData);

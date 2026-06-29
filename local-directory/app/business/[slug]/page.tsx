@@ -11,7 +11,7 @@ import {Business} from "@/app/Business";
 import {Review} from "@/app/Review";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: 'https://web-production-0fb7e.up.railway.app',
     withCredentials: true,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
@@ -149,7 +149,7 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
                         <div className={'grid grid-cols-2 md:grid-cols-3 gap-4'}>
                             {business?.images.map((pics, index) => (
                                 <div key={index} className={'aspect-square rounded-lg overflow-hidden emerald-frame group'}>
-                                    <img src={`http://localhost:8000/storage/${pics.path}`} alt={'Res'}
+                                    <img src={`https://web-production-0fb7e.up.railway.app/storage/${pics.path}`} alt={'Res'}
                                          className={'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110'}/>
                                 </div>
                             ))}
@@ -172,7 +172,7 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
                             <div>
                                 <form onSubmit={handleSubmitReview} className={'p-3 floating-jewel rounded-xl'}>
                                     <div className={'flex gap-4'}>
-                                        <img src={`http://localhost:8000/storage/${business?.images[0].path}`} alt={'Hero'}
+                                        <img src={`https://web-production-0fb7e.up.railway.app/storage/${business?.images[0].path}`} alt={'Hero'}
                                              className={'w-10 h-10'}/>
                                         <p>{business?.businessName}</p>
                                     </div>
