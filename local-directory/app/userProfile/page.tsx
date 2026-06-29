@@ -46,6 +46,17 @@ export default function UserProfile() {
         }
     }, [activeTab]);
 
+    const handleDeleteBusiness = async (deleteId:number) => {
+        try {
+            await api.delete(`api/businesses/${deleteId}`);
+            setBusiness(prev =>
+                prev.filter(biz => biz.id !== deleteId)
+            );
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
     return (
         <div className={'bg-charcoal text-white'}>
             <div className={'p-8'}>
@@ -243,6 +254,9 @@ export default function UserProfile() {
                                                             <Link href={`/business/${biz.slug}/edit`} className={'text-slate-400 text-xs font-bold hover:text-white'}>
                                                                 Edit
                                                             </Link>
+                                                            <button onClick={() => handleDeleteBusiness(biz.id)} className={'text-slate-400 text-xs font-bold hover:text-white'}>
+                                                                Delete
+                                                            </button>
                                                             <Link href={`/business/${biz.slug}`} className={'text-secondary-dark text-xs font-bold hover:underline'}>
                                                                 View →
                                                             </Link>
