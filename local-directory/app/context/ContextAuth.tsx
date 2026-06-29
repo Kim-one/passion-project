@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 return;
             }
             try {
-                const response = await api.get('/api/user');
+                const response = await api.get('api/user');
                 const data = response.data;
                 setUser({
                     name: data.name,
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            await api.post('/api/logout');
+            await api.post('api/logout');
         } catch (error) {
             console.error("Logout error:", error);
         } finally {
