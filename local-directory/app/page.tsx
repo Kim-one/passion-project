@@ -7,7 +7,7 @@ import {useRouter} from "next/navigation";
 export default function HomePage () {
     const router = useRouter();
     const handleNavigate = async (category: string)=>{
-        router.push(`/category/${category}`)
+        router.push(`/categories/${category}`)
     }
 
     return (
