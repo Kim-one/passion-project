@@ -33,7 +33,6 @@ return new class extends Migration
             $table->string('website')->nullable();
 
             $table->decimal('rating',3,2)->default(0);
-            $table->string('heroImage')->nullable();
 
             $table->boolean('featured')->default(false);
 
