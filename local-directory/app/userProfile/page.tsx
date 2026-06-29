@@ -48,7 +48,7 @@ export default function UserProfile() {
 
     const handleDeleteBusiness = async (deleteId:number) => {
         try {
-            await api.delete(`api/businesses/${deleteId}`);
+            await api.delete(`/api/businesses/${deleteId}`);
             setBusiness(prev =>
                 prev.filter(biz => biz.id !== deleteId)
             );
