@@ -8,7 +8,7 @@ const Categories = ({params}: {params: Promise<{ category: string }>}) => {
     useEffect(() => {
         const fetchBusiness = async () => {
             try {
-                const response = await api.get(`/api/businesses/${params}`);
+                const response = await api.get(`api/businesses/${params}`);
                 setBusinesses(response.data);
                 console.log(response.data);
             } catch (err) {
