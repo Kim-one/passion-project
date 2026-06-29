@@ -5,35 +5,35 @@ import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 import { IoIosCamera } from "react-icons/io";
 import {CiLocationOn} from "react-icons/ci";
 import StarRating from "@/app/StarRating";
-import axios from "axios";
+import {api} from "@/app/context/ContextAuth";
 import {useEffect, useState} from "react";
 import {Business} from "@/app/Business";
 import {Review} from "@/app/Review";
 
-const api = axios.create({
-    baseURL: 'https://web-production-0fb7e.up.railway.app',
-    withCredentials: true,
-    headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json',
-    }
-});
-api.interceptors.request.use(async (config) => {
-    // Only fetch CSRF cookie for non-GET requests
-    if (config.method !== 'get') {
-        await api.get('/sanctum/csrf-cookie');
-    }
-
-    const token = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('XSRF-TOKEN='))
-        ?.split('=')[1];
-
-    if (token) {
-        config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
-    }
-    return config;
-});
+// const api = axios.create({
+//     baseURL: 'https://web-production-0fb7e.up.railway.app',
+//     withCredentials: true,
+//     headers: {
+//         'X-Requested-With': 'XMLHttpRequest',
+//         'Accept': 'application/json',
+//     }
+// });
+// api.interceptors.request.use(async (config) => {
+//     // Only fetch CSRF cookie for non-GET requests
+//     if (config.method !== 'get') {
+//         await api.get('/sanctum/csrf-cookie');
+//     }
+//
+//     const token = document.cookie
+//         .split('; ')
+//         .find(row => row.startsWith('XSRF-TOKEN='))
+//         ?.split('=')[1];
+//
+//     if (token) {
+//         config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
+//     }
+//     return config;
+// });
 export default  function BusinessPage({params}:{params: Promise<{slug: string}>}){
     const [business, setBusiness] = useState<Business>();
     const [openWriteReview, setOpenWriteReview] = useState(false);
