@@ -1,17 +1,17 @@
 'use client';
 import axios from 'axios';
 import {useEffect, useState} from "react";
-import {useAuth} from "@/app/context/ContextAuth";
+import {useAuth, api} from "@/app/context/ContextAuth";
 import Link from "next/link";
 
-const api = axios.create({
-    baseURL: 'https://web-production-0fb7e.up.railway.app',
-    withCredentials: true,
-    headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json',
-    }
-});
+// const api = axios.create({
+//     baseURL: 'https://web-production-0fb7e.up.railway.app',
+//     withCredentials: true,
+//     headers: {
+//         'X-Requested-With': 'XMLHttpRequest',
+//         'Accept': 'application/json',
+//     }
+// });
 
 interface Business {
     id: number;
