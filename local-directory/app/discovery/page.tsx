@@ -6,16 +6,16 @@ import StarRating from "@/app/StarRating";
 import {Business} from "@/app/Business";
 import {CiLocationOn} from "react-icons/ci";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
-import axios from "axios";
+import {api} from "@/app/context/ContextAuth";
 
-const api = axios.create({
-    baseURL: 'https://web-production-0fb7e.up.railway.app',
-    withCredentials: true,
-    headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json',
-    }
-});
+// const api = axios.create({
+//     baseURL: 'https://web-production-0fb7e.up.railway.app',
+//     withCredentials: true,
+//     headers: {
+//         'X-Requested-With': 'XMLHttpRequest',
+//         'Accept': 'application/json',
+//     }
+// });
 
 
 const PARISHES = [
