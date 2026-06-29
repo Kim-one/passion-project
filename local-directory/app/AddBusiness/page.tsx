@@ -5,26 +5,27 @@ import { GrInstagram } from "react-icons/gr";
 import { FaFacebookF } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import {useRouter} from "next/navigation";
+import { api } from '@/app/context/ContextAuth';
 
-const api = axios.create({
-    baseURL: 'https://web-production-0fb7e.up.railway.app',
-    withCredentials: true,
-    headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json',
-    }
-});
+// const api = axios.create({
+//     baseURL: 'https://web-production-0fb7e.up.railway.app',
+//     withCredentials: true,
+//     headers: {
+//         'X-Requested-With': 'XMLHttpRequest',
+//         'Accept': 'application/json',
+//     }
+// });
 
-api.interceptors.request.use((config) => {
-    const token = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('XSRF-TOKEN='))
-        ?.split('=')[1];
-    if (token) {
-        config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
-    }
-    return config;
-});
+// api.interceptors.request.use((config) => {
+//     const token = document.cookie
+//         .split('; ')
+//         .find(row => row.startsWith('XSRF-TOKEN='))
+//         ?.split('=')[1];
+//     if (token) {
+//         config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
+//     }
+//     return config;
+// });
 
 const AddBusiness = () => {
     const router = useRouter();
@@ -142,17 +143,13 @@ const AddBusiness = () => {
             data.append(`hours[${i}][is_closed]`,  hour.is_closed ? '1' : '0');
         });
 
-        try{
-            await api.get('/sanctum/csrf-cookie');
+        try {
             const response = await api.post('/api/businesses', data, {
                 headers: {'Content-Type': 'multipart/form-data'}
             });
             console.log(response.data);
             router.push('/userProfile');
-            // console.log('You entered: ', formData);
-            // const response = await axios.post('http://localhost:8000/api/createBusiness', formData);
-            // console.log(response.data);
-        } catch(err: any){
+        } catch(err: any) {
             console.log(err);
             setError(err.response?.data?.message);
         }

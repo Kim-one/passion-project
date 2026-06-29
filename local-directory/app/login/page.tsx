@@ -4,12 +4,13 @@ import BusinessSkeleton from "@/app/BusinessSkeleton";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useAuth } from "@/app/context/ContextAuth";
+import {api} from "@/app/context/ContextAuth"
 
 // Configure Axios globally outside the component cycle
-axios.defaults.withCredentials = true;
-axios.defaults.withXSRFToken = true;
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-axios.defaults.headers.common['Accept'] = 'application/json';
+// axios.defaults.withCredentials = true;
+// axios.defaults.withXSRFToken = true;
+// axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+// axios.defaults.headers.common['Accept'] = 'application/json';
 
 export default function LoginPage () {
     const { setUser } = useAuth();
@@ -48,28 +49,26 @@ export default function LoginPage () {
         const submissionData = mode === 'login' ? loginData : registrationData;
 
         // Match up with Laravel configuration
-        const modeURL = mode === 'login'
-            ? 'https://web-production-0fb7e.up.railway.app/login'
-            : 'https://web-production-0fb7e.up.railway.app/api/register';
+        const modeURL = mode === 'login' ? '/login' : '/api/register';
 
         try {
-            // 1. Fetch cookie (Always do this before a state-changing POST request)
-            await axios.get('https://web-production-0fb7e.up.railway.app/sanctum/csrf-cookie');
-
-            // 2. Execute Auth request
-            const response = await axios.post(modeURL, submissionData);
+            const response = await api.post(modeURL, submissionData);
             console.log(response.data);
 
-            // 3. Update global application state
+            // Save token to localStorage
+            if (response.data?.token) {
+                localStorage.setItem('auth_token', response.data.token);
+            }
+
+            // Update global state
             if (response.data?.user) {
                 const u = response.data.user;
                 setUser({
-                    name: u.firstName ?? u.first_name ?? u.name,
+                    name: u.name,
                     email: u.email,
                 });
             }
 
-            // 4. Redirect user
             router.push(`/${destination}`);
         } catch (error: any) {
             if (error.response) {
