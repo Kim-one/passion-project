@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import Link from "next/link";
 // import {FILTER_BUSINESSES} from "@/app/MockData";
 import StarRating from "@/app/StarRating";
+import {Business} from "@/app/Business";
 import {CiLocationOn} from "react-icons/ci";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
 import axios from "axios";
@@ -16,28 +17,6 @@ const api = axios.create({
     }
 });
 
-interface Business {
-    id: number;
-    businessName: string;
-    category: string;
-    city: string;
-    description: string;
-    parish: string;
-    slug: string;
-    streetAddress: string;
-    user_id: number;
-    rating: number;
-    reviewCount: number;
-    featured: boolean;
-    verified: boolean;
-    about: string | null;
-    email: string | null;
-    phone: string | null;
-    website: string | null;
-    heroImage: string | null;
-    created_at: string;
-    updated_at: string;
-}
 
 const PARISHES = [
     {
@@ -109,7 +88,7 @@ const Discoveries = () => {
     useEffect(() => {
         const fetchAllBusiness = async () => {
             try{
-                const response = await api.get('/api/businesses');
+                const response = await api.get('api/businesses');
                 console.log(response.data);
                 setAllBusinesses(response.data);
             } catch (err){
@@ -185,8 +164,8 @@ const Discoveries = () => {
                     {currentBusinesses.map((item)=>(
                         <article key={item.id} className={'group relative flex flex-col rounded-xl overflow-hidden border border-white/5 hover:border-secondary-dark/50 transition-all hover:translate-y-[4px]'}>
                             <div className={'relative h-64 w-full overflow-hidden'}>
-                                {/*<div className={'absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110'}*/}
-                                {/*     style={{backgroundImage: `url(${item.image})`}}></div>*/}
+                                <div className={'absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110'}
+                                     style={{backgroundImage: `url(http://localhost:8000/storage/${item.images[0].path})`}}></div>
                                 <div className={'absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-80'}></div>
                                 <div className={'absolute top-4 left-4 bg-secondary-dark text-background-dark text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-tighter'}>
                                     {item.featured &&(<p>Featured</p>)}

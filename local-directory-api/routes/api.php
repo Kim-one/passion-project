@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\Register;
 use App\Http\Controllers\api\BusinessController;
+use App\Http\Controllers\api\ReviewController;
 
 Route::post('/register', Register::class);
 
@@ -22,8 +23,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/my-businesses', [BusinessController::class, 'myBusinesses']);
     Route::post('/businesses', [BusinessController::class, 'store']);
-    Route::put('/businesses/{business}', [BusinessController::class, 'update']);
-    Route::delete('/businesses/{business}', [BusinessController::class, 'destroy']);
+    Route::get('/businesses/{slug}', [BusinessController::class, 'show']);
+    Route::post('/businesses/{slug}', [BusinessController::class, 'update']);
+    Route::delete('/businesses/image/{imageId}', [BusinessController::class, 'deleteImage']);
+    Route::get('/businesses/{slug}/reviews',          [ReviewController::class, 'index']);
+    Route::post('/businesses/{slug}/reviews',         [ReviewController::class, 'store']);
+    Route::delete('/businesses/{slug}/reviews/{reviewId}',  [ReviewController::class, 'destroy']);
 });
 
 // Route::get('/view-all', function() {
