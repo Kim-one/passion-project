@@ -55,9 +55,10 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
 
                 const userRes = await api.get('api/user');
                 setCurrentUser(userRes.data);
+                console.log(userRes.data);
 
                 const response = await api.get(`api/businesses/${slug}`);
-                console.log(response);
+                console.log(response.data);
                 setBusiness(response.data);
 
                 const reviewsRes = await api.get(`api/businesses/${slug}/reviews`);
