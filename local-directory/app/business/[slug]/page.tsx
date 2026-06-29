@@ -60,6 +60,9 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
                 const response = await api.get(`api/businesses/${slug}`);
                 console.log(response.data);
                 setBusiness(response.data);
+                console.log("Business object:", response.data);
+                console.log("Images:", response.data.images);
+                console.log("First image:", response.data.images?.[0]);
 
                 const reviewsRes = await api.get(`api/businesses/${slug}/reviews`);
                 setReviews(reviewsRes.data);
