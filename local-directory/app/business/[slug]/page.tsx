@@ -120,7 +120,7 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
         <div className={'bg-charcoal h-full text-white max-w-full mx-auto gap-8 p-6'}>
             <div className={'max-w-7xl mx-auto px-6 py-8'}></div>
             <div className={'relative w-full h-[500px] rounded-xl overflow-hidden mb-12'}>
-                <div className={'absolute inset-0 bg-cover bg-center'} style={{backgroundImage: `url(http://localhost:8000/storage/${business?.images[0].path})`}}></div>
+                <div className={'absolute inset-0 bg-cover bg-center'} style={{backgroundImage: `url(https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${business?.images[0].path})`}}></div>
                 <div className={'absolute bottom-10 left-10 right-10 flex flex-col items-start gap-2'}>
                     <div className={'flex items-center gap-2 px-3 py-1 bg-secondary-dark text-background-dark rounded-full text-[10px] font-black uppercase tracking-widest'}>
                         <MdOutlineVerified /> Featured Destination
@@ -149,7 +149,7 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
                         <div className={'grid grid-cols-2 md:grid-cols-3 gap-4'}>
                             {business?.images.map((pics, index) => (
                                 <div key={index} className={'aspect-square rounded-lg overflow-hidden emerald-frame group'}>
-                                    <img src={`https://web-production-0fb7e.up.railway.app/storage/${pics.path}`} alt={'Res'}
+                                    <img src={`https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${pics.path}`} alt={'Res'}
                                          className={'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110'}/>
                                 </div>
                             ))}
@@ -172,7 +172,7 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
                             <div>
                                 <form onSubmit={handleSubmitReview} className={'p-3 floating-jewel rounded-xl'}>
                                     <div className={'flex gap-4'}>
-                                        <img src={`https://web-production-0fb7e.up.railway.app/storage/${business?.images[0].path}`} alt={'Hero'}
+                                        <img src={`https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${business?.images[0].path}`} alt={'Hero'}
                                              className={'w-10 h-10'}/>
                                         <p>{business?.businessName}</p>
                                     </div>
