@@ -55,7 +55,10 @@ export default function UserProfile() {
                         <h1 className={'text-4xl font-bold mb-1'}>{user ? user.name : 'Loading'}</h1>
                         <p className={'flex items-center gap-2 text-secondary-dark font-medium'}>
                             <span className="material-symbols-outlined">verified</span>
-                            Local Explorer - Kingston, Jamaica</p>
+                            Local Explorer
+                            {/*- */}
+                            {/*{}, Jamaica*/}
+                        </p>
                     </div>
                     <div className={'absolute -bottom-14 right-10 size-[120px] bg-cover bg-center bg-no-repeat rounded-full border-[3px] border-green-600 shadow-2xl'}
                          style={{backgroundImage: 'url(/images/ProfilePic.png)'}}>
@@ -69,14 +72,14 @@ export default function UserProfile() {
                                 <h1>Your Impact</h1>
                             </div>
                             <div className={'space-y-4'}>
-                                <div className={'flex flex-col p-3 gap-1 rounded-[2rem] border border-secondary-dark/10 bg-background-dark'}>
-                                    <span className={'text-secondary-dark font-bold text-2xl'}>42</span>
-                                    <span className={'text-xs uppercase tracking-wider opacity-70'}>Saved Places</span>
-                                </div>
-                                <div className={'flex flex-col p-3 gap-1 rounded-[2rem] border border-secondary-dark/10 bg-background-dark'}>
-                                    <span className={'text-secondary-dark font-bold text-2xl'}>18</span>
-                                    <span className={'text-xs uppercase tracking-wider opacity-70'}>Reviews Written</span>
-                                </div>
+                                {/*<div className={'flex flex-col p-3 gap-1 rounded-[2rem] border border-secondary-dark/10 bg-background-dark'}>*/}
+                                {/*    <span className={'text-secondary-dark font-bold text-2xl'}>42</span>*/}
+                                {/*    <span className={'text-xs uppercase tracking-wider opacity-70'}>Saved Places</span>*/}
+                                {/*</div>*/}
+                                {/*<div className={'flex flex-col p-3 gap-1 rounded-[2rem] border border-secondary-dark/10 bg-background-dark'}>*/}
+                                {/*    <span className={'text-secondary-dark font-bold text-2xl'}>18</span>*/}
+                                {/*    <span className={'text-xs uppercase tracking-wider opacity-70'}>Reviews Written</span>*/}
+                                {/*</div>*/}
                                 <div className={'flex flex-col p-3 gap-1 rounded-[2rem] border border-secondary-dark/10 bg-background-dark'}>
                                     <span className={'text-secondary-dark font-bold text-2xl'}>{business.length}</span>
                                     <span className={'text-xs uppercase tracking-wider opacity-70'}>Businesses Added</span>
@@ -101,16 +104,16 @@ export default function UserProfile() {
                     </div>
                     <div className={'col-span-3'}>
                         <div className={'flex border-b border-secondary-dark/10 mb-8'}>
-                            <button onClick={() => setActiveTab('Saved')}
-                                    className={`text-sm px-6 py-4 ${activeTab ==='Saved' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'} flex items-center gap-3 cursor-pointer`}>
-                                <span className="material-symbols-outlined">bookmark</span>
-                                <span>Saved Places</span>
-                            </button>
-                            <button onClick={() => setActiveTab('reviews')}
-                                    className={`text-sm px-6 py-4 ${activeTab ==='reviews' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'}  flex items-center gap-3 cursor-pointer`}>
-                                <span className="material-symbols-outlined">star</span>
-                                <span>My Reviews</span>
-                            </button>
+                            {/*<button onClick={() => setActiveTab('Saved')}*/}
+                            {/*        className={`text-sm px-6 py-4 ${activeTab ==='Saved' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'} flex items-center gap-3 cursor-pointer`}>*/}
+                            {/*    <span className="material-symbols-outlined">bookmark</span>*/}
+                            {/*    <span>Saved Places</span>*/}
+                            {/*</button>*/}
+                            {/*<button onClick={() => setActiveTab('reviews')}*/}
+                            {/*        className={`text-sm px-6 py-4 ${activeTab ==='reviews' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'}  flex items-center gap-3 cursor-pointer`}>*/}
+                            {/*    <span className="material-symbols-outlined">star</span>*/}
+                            {/*    <span>My Reviews</span>*/}
+                            {/*</button>*/}
                             <button onClick={() => setActiveTab('business')}
                                     className={`text-sm px-6 py-4 ${activeTab ==='business' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'} flex items-center gap-3 cursor-pointer`}>
                                 <span className="material-symbols-outlined">storefront</span>
@@ -226,9 +229,7 @@ export default function UserProfile() {
                                                 <div key={biz.id} className={'rounded-[2rem] flex flex-col bg-white/5 p-5 gap-3'}>
                                                     <div className={'flex items-start justify-between'}>
                                                         <h1 className={'font-bold text-lg'}>{biz.businessName}</h1>
-                                                        <span className={'text-xs bg-primary-dark/20 text-primary-dark px-2 py-1 rounded-full font-bold'}>
-                                {biz.category}
-                            </span>
+                                                        <span className={'text-xs bg-primary-dark/20 text-primary-dark px-2 py-1 rounded-full font-bold'}>{biz.category}</span>
                                                     </div>
                                                     <p className={'text-slate-400 text-sm line-clamp-2'}>{biz.description}</p>
                                                     <div className={'flex items-center gap-1 text-slate-500 text-xs'}>
@@ -236,13 +237,16 @@ export default function UserProfile() {
                                                         <span>{biz.city}, {biz.parish}</span>
                                                     </div>
                                                     <div className={'flex items-center justify-between mt-2'}>
-                            <span className={`text-xs font-bold px-2 py-1 rounded-full ${biz.verified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                                {biz.verified ? 'Verified' : 'Pending Review'}
-                            </span>
-                                                        <Link href={`/business/${biz.slug}`}
-                                                              className={'text-secondary-dark text-xs font-bold hover:underline'}>
-                                                            View →
-                                                        </Link>
+                                                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${biz.verified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                                                            {biz.verified ? 'Verified' : 'Pending Review'}</span>
+                                                        <div className={'flex items-center gap-3'}>
+                                                            <Link href={`/business/${biz.slug}/edit`} className={'text-slate-400 text-xs font-bold hover:text-white'}>
+                                                                Edit
+                                                            </Link>
+                                                            <Link href={`/business/${biz.slug}`} className={'text-secondary-dark text-xs font-bold hover:underline'}>
+                                                                View →
+                                                            </Link>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ))}
