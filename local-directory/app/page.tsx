@@ -1,8 +1,15 @@
+'use client'
 import {Categories} from "@/app/Categories";
 import {LocalGems} from "@/app/LocalGems";
 import Link from "next/link";
+import {useRouter} from "next/navigation";
 
 export default function HomePage () {
+    const router = useRouter();
+    const handleNavigate = async (category: string)=>{
+        router.push(`/category/${category}`)
+    }
+
     return (
         <div className={"bg-charcoal min-h-screen min-w-full flex flex-col"}>
             <div className={'ml-5 mr-5'}>
@@ -47,12 +54,14 @@ export default function HomePage () {
                             className="material-symbols-outlined">chevron_right</span></Link>
                     </div>
                     <div className={'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'}>
-                        {Categories.slice(0,4).map(category => (
-                            <div key={category.id} style={{backgroundImage: `url(${category.image})`}}
+                        {Categories.slice(0,4).map(item => (
+                            <div key={item.id}
+                                 onClick={() => handleNavigate(item.category)}
+                                 style={{backgroundImage: `url(${item.image})`}}
                                  className={'flex aspect-[1] relative overflow-hidden rounded-2xl items-end bg-no-repeat bg-center bg-cover'}>
                                 <p className={'flex flex-col text-white font-bold text-2xl absolute bottom-2 left-2'}>
-                                    <span className={'material-symbols-outlined text-secondary-dark'}>{category.icon}</span>
-                                    {category.label}
+                                    <span className={'material-symbols-outlined text-secondary-dark'}>{item.icon}</span>
+                                    {item.label}
                                 </p>
                             </div>
                         ))}
