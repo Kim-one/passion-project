@@ -121,7 +121,7 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
         <div className={'bg-charcoal h-full text-white max-w-full mx-auto gap-8 p-6'}>
             <div className={'max-w-7xl mx-auto px-6 py-8'}></div>
             <div className={'relative w-full h-[500px] rounded-xl overflow-hidden mb-12'}>
-                <div className={'absolute inset-0 bg-cover bg-center'} style={{backgroundImage: `url(https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${business?.images[0].path})`}}></div>
+                <div className={'absolute inset-0 bg-cover bg-center'} style={{backgroundImage: `url(https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${business?.images?.[0]?.path})`}}></div>
                 <div className={'absolute bottom-10 left-10 right-10 flex flex-col items-start gap-2'}>
                     <div className={'flex items-center gap-2 px-3 py-1 bg-secondary-dark text-background-dark rounded-full text-[10px] font-black uppercase tracking-widest'}>
                         <MdOutlineVerified /> Featured Destination
