@@ -21,7 +21,7 @@ import {api} from "@/app/context/ContextAuth";
 const PARISHES = [
     {
         id: 1,
-        parish: 'St.Ann',
+        parish: 'St. Ann',
         options: 200
     },{
         id: 2,
@@ -80,7 +80,7 @@ const PARISHES = [
 const FILTERS = ['Trending', 'Highly Rated','Recently Added', '$0 - $100']
 
 const Discoveries = () => {
-    const [parish, setParish] = useState('Kingston')
+    const [parish, setParish] = useState<string | null>(null);
     const [filter, setFilter] = useState('Trending')
     const [currPage, setCurrPage] = useState(1)
     const [allBusinesses, setAllBusinesses] = useState<Business[]>([])
@@ -97,17 +97,38 @@ const Discoveries = () => {
         }
         fetchAllBusiness();
     }, []);
+
+    const parishCounts = allBusinesses.reduce((acc, biz) => {
+        const p = biz.parish;
+
+        if (biz.parish) acc[biz.parish] = (acc[biz.parish] || 0) + 1; return acc;
+    }, {} as Record<string, number>);
+
+    const parishesWithCounts = PARISHES.map(p => ({
+        ...p,
+        options: parishCounts[p.parish] || 0,
+    }));
+
+    const parishes = Object.entries(parishCounts)
+        .map(([name, count]) => ({name, count}))
+        .sort((a, b) => b.count - a.count);
+
+    const filteredBusinesses = parish
+        ? allBusinesses.filter(b => b.parish === parish)
+        : allBusinesses;
+
     const BUSINESS_PER_PAGE = 6
     // const total_pages = Math.ceil(FILTER_BUSINESSES.length / BUSINESS_PER_PAGE)
     // const startIndex = (currPage - 1) * BUSINESS_PER_PAGE
     // const endIndex = startIndex + BUSINESS_PER_PAGE
     // const currentBusinesses = FILTER_BUSINESSES.slice(startIndex, endIndex);
-    const total_pages = Math.ceil(allBusinesses.length / BUSINESS_PER_PAGE);
+    const total_pages = Math.ceil(filteredBusinesses.length / BUSINESS_PER_PAGE);
     const startIndex = (currPage - 1) * BUSINESS_PER_PAGE;
     const endIndex = startIndex + BUSINESS_PER_PAGE;
-    const currentBusinesses = allBusinesses.slice(startIndex, endIndex);
+    const currentBusinesses = filteredBusinesses.slice(startIndex, endIndex);
 
     console.log("All Businesses",currentBusinesses);
+
 
     return (
         <div className={'bg-charcoal h-full text-white max-w-full mx-auto flex gap-8 p-6'}>
@@ -119,7 +140,7 @@ const Discoveries = () => {
                         <button className={'text-secondary-dark text-xs font-bold hover:underline'}>Clear</button>
                     </div>
                     <div className={'flex flex-col gap-1'}>
-                        {PARISHES.map((item) => (
+                        {parishesWithCounts.map((item) => (
                             <label key={item.id}
                                    onClick={() => setParish(item.parish)}
                                    className={`flex items-center gap-3 p-3 rounded-xl ${parish === item.parish ? 'bg-secondary-dark/10 border border-secondary-dark/20' : 'bg-surface-darker'}  cursor-pointer group`}>

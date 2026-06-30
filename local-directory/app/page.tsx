@@ -49,7 +49,7 @@ export default function HomePage () {
                     <h1 className={'text-white font-bold text-3xl'}>Explore By Category</h1>
                     <div className={'flex justify-between'}>
                         <p className={'text-slate-300 text-sm'}>Everything from street food to luxury stays</p>
-                        <Link className={'flex items-center cursor-pointer text-secondary-dark text-sm font-bold'} href={'/Categories'}>
+                        <Link className={'flex items-center cursor-pointer text-secondary-dark text-sm font-bold'} href={'/discovery'}>
                             View All <span
                             className="material-symbols-outlined">chevron_right</span></Link>
                     </div>

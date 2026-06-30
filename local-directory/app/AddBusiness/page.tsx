@@ -1,6 +1,5 @@
 'use client';
 import React, {useRef, useState} from "react";
-import axios from "axios";
 import { GrInstagram } from "react-icons/gr";
 import { FaFacebookF } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -26,6 +25,38 @@ import { api } from '@/app/context/ContextAuth';
 //     }
 //     return config;
 // });
+
+const CATEGORIES = [
+    'Restaurant',
+    'Cafe',
+    'Bar & Nightlife',
+    'Hotel & Lodging',
+    'Tour & Attraction',
+    'Retail & Shopping',
+    'Beauty & Spa',
+    'Health & Wellness',
+    'Automotive',
+    'Professional Services',
+    'Real Estate',
+    'Other',
+];
+
+const PARISHES = [
+    'Kingston',
+    'St. Andrew',
+    'St. Catherine',
+    'Clarendon',
+    'Manchester',
+    'St. Elizabeth',
+    'Westmoreland',
+    'Hanover',
+    'St. James',
+    'Trelawny',
+    'St. Ann',
+    'St. Mary',
+    'Portland',
+    'St. Thomas',
+];
 
 const AddBusiness = () => {
     const router = useRouter();
@@ -74,7 +105,7 @@ const AddBusiness = () => {
         setHours(prev => prev.map((h, i) => i === index ? { ...h, [field]: value } : h));
     };
 
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>{
         const { name, value } = e.target;
         setFormData(prevData => ({
             ...prevData,
@@ -169,27 +200,32 @@ const AddBusiness = () => {
                     className={'flex flex-col bg-surface-form-light text-white gap-6 p-10 border border-surface-dark w-[800px] rounded-2xl'}>
                     <div className={'flex justify-between'}>
                         <div className={'flex flex-col gap-2 w-[350px]'}>
-                            <label className={'uppercase font-semibold text-sm'}>Business Name</label>
+                            <label className={'uppercase font-semibold text-sm'}>Business Name<span className={'text-red-500'}>*</span></label>
                             <input type={'text'} name={'businessName'} value={formData.businessName}
                                    onChange={handleChange}
                                    placeholder={'e.g. Blue Mountain Cafe'} className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
-                            <p>{error}</p>
+                            <p className={'text-red-500'}>{error}</p>
                         </div>
                         <div className={'flex flex-col gap-2 w-[350px]'}>
-                            <label className={'uppercase font-semibold text-sm'}>Category</label>
-                            <input type={'text'} name={'category'} value={formData.category}
-                                   onChange={handleChange}
-                                   placeholder={'Choose a Category'} className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
+                            <label className={'uppercase font-semibold text-sm'}>Category<span className={'text-red-500'}>*</span></label>
+                            <select name={'category'} value={formData.category} onChange={handleChange}
+                                    className={'border border-[#564f39] p-3 w-full rounded-3xl bg-transparent text-white'}>
+                                <option value={''} disabled>Choose a Category</option>
+                                {CATEGORIES.map(cat => (
+                                    <option key={cat} value={cat} className={'text-black'}>{cat}</option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                     <div className={'flex flex-col gap-2'}>
                         <label className={'flex justify-between text-sm uppercase font-semibold text-sm'}>
-                            Description
+                            <span>Description<span className={'text-red-500'}>*</span></span>
                             <span className={'text-xs lowercase'}>Give a short description</span>
                         </label>
                         <textarea name={'description'} value={formData.description} onChange={handleChange}
                                   className={'border border-[#564f39] rounded-3xl w-full p-3 resize-none h-[50px]'}
                                   placeholder={'What makes your place special?'}></textarea>
+                        <p className={'text-red-500'}>{error}</p>
                     </div>
                     <div className={'flex flex-col gap-2'}>
                         <label className={'flex justify-between text-sm uppercase font-semibold text-sm'}>
@@ -203,26 +239,35 @@ const AddBusiness = () => {
                     <div className={'flex flex-row gap-4'}>
                         <div className={'flex flex-col gap-2 w-[450px]'}>
                             <label className={'uppercase font-semibold text-sm'}>
-                                Location Address
+                                Location Address<span className={'text-red-500'}>*</span>
                             </label>
                             <input type={"text"} name={'streetAddress'} value={formData.streetAddress} onChange={handleChange}
                                    placeholder={'Street Address, building name'}
                                    className={'border border-[#564f39] p-3 w-full rounded-3xl'}
                             />
+                            <p className={'text-red-500'}>{error}</p>
+
                         </div>
                         <div className={'flex flex-col gap-2 w-[200px]'}>
-                            <label className={'uppercase font-semibold text-sm'}>City</label>
+                            <label className={'uppercase font-semibold text-sm'}>City<span className={'text-red-500'}>*</span></label>
                             <input type={'text'} name={'city'} value={formData.city}
                                    onChange={handleChange}
                                    placeholder={'e.g. Kingston'}
                                    className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
+                            <p className={'text-red-500'}>{error}</p>
+
                         </div>
                         <div className={'flex flex-col gap-2 w-[330px]'}>
-                            <label className={'uppercase text-sm font-semibold'}>Parish</label>
-                            <input type={'text'} placeholder={'Choose a Parish'}
-                                   name={'parish'} value={formData.parish}
-                                   onChange={handleChange}
-                                   className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
+                            <label className={'uppercase text-sm font-semibold'}>Parish<span className={'text-red-500'}>*</span></label>
+                            <select name={'parish'} value={formData.parish} onChange={handleChange}
+                                    className={'border border-[#564f39] p-3 w-full rounded-3xl bg-transparent text-white'}>
+                                <option value={''} disabled>Choose a Parish</option>
+                                {PARISHES.map(p => (
+                                    <option key={p} value={p} className={'text-black'}>{p}</option>
+                                ))}
+                            </select>
+                            <p className={'text-red-500'}>{error}</p>
+
                         </div>
                     </div>
                     <div className={'space-y-6'}>
@@ -342,6 +387,7 @@ const AddBusiness = () => {
                             )}
                         </div>
                         <input ref={heroInputRef} type={'file'} accept={'image/*'} onChange={handleHeroChange} className={'hidden'} />
+                        <p className={'text-red-500'}>{error}</p>
                     </div>
                     <div className={'flex flex-col gap-2 pb-12 border-b border-[#564f39]'}>
                         <label className={'uppercase text-sm font-semibold'}>Gallery Photos</label>
