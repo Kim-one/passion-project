@@ -15,7 +15,7 @@ export const Categories = [
     },
     {
         id: 3,
-        label: 'Attractions',
+        label: 'Tours & Attractions',
         category: 'Attractions',
         icon: 'surfing',
         image: '/images/attractions.png',
@@ -27,11 +27,19 @@ export const Categories = [
         icon: 'home_repair_service',
         image: '/images/services.png',
     },
-    // {
-    //     id: 5,
-    //     label: 'Services',
-    //     category: 'Services',
-    //     icon: 'home_repair_service',
-    //     image: '/images/services.png',
-    // }
 ]
+
+const CATEGORIES = [
+    'Restaurant',
+    'Cafe',
+    'Bar & Nightlife',
+    'Hotel & Lodging',
+    'Tour & Attraction',
+    'Retail & Shopping',
+    'Beauty & Spa',
+    'Health & Wellness',
+    'Automotive',
+    'Professional Services',
+    'Real Estate',
+    'Other',
+];

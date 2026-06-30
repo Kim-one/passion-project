@@ -63,6 +63,7 @@ const AddBusiness = () => {
     const [formData, setFormData] = useState({
         businessName: '',
         category: '',
+        slogan : '',
         description: '',
         streetAddress: '',
         parish: '',
@@ -156,6 +157,13 @@ const AddBusiness = () => {
             return;
         }
 
+        if(!formData.businessName) setError('Please Enter Business Name.')
+        if(!formData.description) setError('Please Enter Business Description.')
+        if(!formData.streetAddress) setError('Please Enter Business StreetAddress.')
+        if(!formData.city) setError('Please Enter City or Town.')
+        if(!formData.parish) setError('Please Enter Parish.')
+        if(!formData.phone) setError('Please Enter Phone Number.')
+
         const data = new FormData();
         Object.entries(formData).forEach(([key, value]) => {
             data.append(key, value);
@@ -219,6 +227,15 @@ const AddBusiness = () => {
                     </div>
                     <div className={'flex flex-col gap-2'}>
                         <label className={'flex justify-between text-sm uppercase font-semibold text-sm'}>
+                            <span>Slogan</span>
+                            <span className={'text-xs lowercase'}>Give a catchy slogan</span>
+                        </label>
+                        <textarea name={'slogan'} value={formData.slogan} onChange={handleChange} rows={1}
+                                  className={'border border-[#564f39] rounded-3xl w-full p-3 resize-none'}
+                                  placeholder={'Catch Phrase'}></textarea>
+                    </div>
+                    <div className={'flex flex-col gap-2'}>
+                        <label className={'flex justify-between text-sm uppercase font-semibold text-sm'}>
                             <span>Description<span className={'text-red-500'}>*</span></span>
                             <span className={'text-xs lowercase'}>Give a short description</span>
                         </label>
@@ -246,7 +263,6 @@ const AddBusiness = () => {
                                    className={'border border-[#564f39] p-3 w-full rounded-3xl'}
                             />
                             <p className={'text-red-500'}>{error}</p>
-
                         </div>
                         <div className={'flex flex-col gap-2 w-[200px]'}>
                             <label className={'uppercase font-semibold text-sm'}>City<span className={'text-red-500'}>*</span></label>
@@ -255,7 +271,6 @@ const AddBusiness = () => {
                                    placeholder={'e.g. Kingston'}
                                    className={'border border-[#564f39] p-3 w-full rounded-3xl'}/>
                             <p className={'text-red-500'}>{error}</p>
-
                         </div>
                         <div className={'flex flex-col gap-2 w-[330px]'}>
                             <label className={'uppercase text-sm font-semibold'}>Parish<span className={'text-red-500'}>*</span></label>
@@ -267,7 +282,6 @@ const AddBusiness = () => {
                                 ))}
                             </select>
                             <p className={'text-red-500'}>{error}</p>
-
                         </div>
                     </div>
                     <div className={'space-y-6'}>
@@ -275,6 +289,14 @@ const AddBusiness = () => {
                             <h3 className={'text-white text-lg font-bold mb-4'}>Contact Information</h3>
                         </div>
                         <div className={'grid grid-cols-1 md:grid-cols-3 gap-6'}>
+                            <div className={'flex flex-col gap-2'}>
+                                <label>Phone Number<span className={'text-red-500'}>*</span></label>
+                                <input type={'text'} placeholder={'876555555'}
+                                       onChange={handleChange}
+                                       name={'phone'}
+                                       value={formData.phone}
+                                       className={'w-full rounded-xl text-white border border-[#564f39] bg-[#28241b] h-13 placeholder:[#bcb39a]/50 p-4'}/>
+                            </div>
                             <div className={'flex flex-col gap-2'}>
                                 <label>Email Address</label>
                                 <input type={'email'}
@@ -289,14 +311,6 @@ const AddBusiness = () => {
                                 <input type={'url'} placeholder={'www.hello.com'} onChange={handleChange}
                                        name={'website'}
                                        value={formData.website}
-                                       className={'w-full rounded-xl text-white border border-[#564f39] bg-[#28241b] h-13 placeholder:[#bcb39a]/50 p-4'}/>
-                            </div>
-                            <div className={'flex flex-col gap-2'}>
-                                <label>Phone Number</label>
-                                <input type={'text'} placeholder={'876555555'}
-                                       onChange={handleChange}
-                                       name={'phone'}
-                                       value={formData.phone}
                                        className={'w-full rounded-xl text-white border border-[#564f39] bg-[#28241b] h-13 placeholder:[#bcb39a]/50 p-4'}/>
                             </div>
                         </div>

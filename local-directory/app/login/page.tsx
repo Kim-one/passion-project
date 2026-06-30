@@ -12,10 +12,36 @@ import {api} from "@/app/context/ContextAuth"
 // axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // axios.defaults.headers.common['Accept'] = 'application/json';
 
+
+
+const COUNTRY = [
+    'Canada',
+    'Jamaica',
+];
+
+const PARISHES = [
+    'Kingston',
+    'St. Andrew',
+    'St. Catherine',
+    'Clarendon',
+    'Manchester',
+    'St. Elizabeth',
+    'Westmoreland',
+    'Hanover',
+    'St. James',
+    'Trelawny',
+    'St. Ann',
+    'St. Mary',
+    'Portland',
+    'St. Thomas',
+];
+
 export default function LoginPage () {
     const { setUser } = useAuth();
     const [auth, setAuth] = useState('login');
     const [mounted, setMounted] = useState(false);
+    const [loginError, setLoginError] = useState("");
+    const [registrationError, setRegistrationError] = useState("");
     const router = useRouter();
 
     const [registrationData, setRegistrationData] = useState({
@@ -23,6 +49,9 @@ export default function LoginPage () {
         lastName: '',
         email: '',
         address: '',
+        city: '',
+        parish: '',
+        country: '',
         password: '',
     });
 
@@ -75,12 +104,18 @@ export default function LoginPage () {
                 // The server responded with a status code outside the 2xx range
                 console.error("Server Error Data:", error.response.data);
                 console.error("Server Status:", error.response.status);
+                if (mode === 'login'){
+                    setLoginError(error.response.data.message);
+                } else {
+                    setRegistrationError(error.response.data.message);
+                }
             } else if (error.request) {
                 // The request was made but no response was received (Classic CORS / Server Down)
                 console.error("No response received. Check your Laravel server or CORS settings:", error.request);
             } else {
                 console.error("Error setting up request:", error.message);
-            }        }
+            }
+        }
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, mode: string) => {
@@ -131,6 +166,7 @@ export default function LoginPage () {
                         {/* Login Form Section */}
                         {auth === 'login' ? (
                             <form key={'login-form'} className={'text-white space-y-5'} onSubmit={(e) => handleSubmit(e, 'userProfile', 'login')}>
+                                <span className={'text-red-500'}>{loginError}</span>
                                 <div className={'space-y-2'}>
                                     <label className={'text-sm font-medium inline-block ml-1'}>Email Address</label>
                                     <input type={'email'} placeholder={'name@example.com'} name={'email'} value={loginData.email}
@@ -151,25 +187,62 @@ export default function LoginPage () {
                         ) : (
                             /* Registration Form Section */
                             <form key={'registration-form'} className={'text-white space-y-5'} onSubmit={(e) => handleSubmit(e, 'userProfile', 'register')}>
+                                <span className={'text-red-500'}>{registrationError}</span>
                                 <div className={'flex justify-between gap-4'}>
                                     <div className={'space-y-2'}>
-                                        <label className={'text-sm font-medium inline-block ml-1'}>First Name</label>
+                                        <label className={'text-sm font-medium inline-block ml-1'}>First Name<span className={'text-red-500'}>*</span></label>
                                         <input type={'text'} placeholder={'First Name'} name={'firstName'} value={registrationData.firstName}
                                                onChange={(e) => handleChange(e, 'register')}
                                                className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'} required />
                                     </div>
                                     <div className={'space-y-2'}>
-                                        <label className={'text-sm font-medium inline-block ml-1'}>Last Name</label>
+                                        <label className={'text-sm font-medium inline-block ml-1'}>Last Name<span className={'text-red-500'}>*</span></label>
                                         <input type={'text'} placeholder={'Last Name'} name={'lastName'} value={registrationData.lastName}
                                                onChange={(e) => handleChange(e, 'register')}
                                                className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'} required />
                                     </div>
                                 </div>
-                                <div className={'space-y-2'}>
-                                    <label className={'font-medium text-sm inline-block ml-1'}>Address</label>
-                                    <input type={'text'} placeholder={'Parish, Country'} name={'address'} value={registrationData.address}
-                                           onChange={(e) => handleChange(e, 'register')}
-                                           className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'} required />
+                                <div className={'flex gap-3'}>
+                                    <div className={'space-y-2'}>
+                                        <label className={'font-medium text-sm inline-block ml-1'}>Address</label>
+                                        <input type={'text'} placeholder={'Street Address'} name={'address'} value={registrationData.address}
+                                               onChange={(e) => handleChange(e, 'register')}
+                                               className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'} required />
+                                    </div>
+                                    <div className={'space-y-2'}>
+                                        <label className={'font-medium text-sm inline-block ml-1'}>City</label>
+                                        <input type={'text'} placeholder={'Ocho Rios'} name={'city'} value={registrationData.city}
+                                               onChange={(e) => handleChange(e, 'register')}
+                                               className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'} required />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className={'space-y-2'}>
+                                        <label className={'font-medium text-sm inline-block ml-1'}>Parish</label>
+                                        <select name={'parish'} value={registrationData.parish} onChange={(e) => handleChange(e, 'register')}
+                                                className={'border border-[#564f39] p-3 w-full rounded-3xl bg-transparent text-white'}>
+                                            <option value={''} disabled>Choose a Category</option>
+                                            {PARISHES.map(cat => (
+                                                <option key={cat} value={cat} className={'text-black'}>{cat}</option>
+                                            ))}
+                                        </select>
+                                        {/*<input type={'text'} placeholder={'Parish'} name={'parish'} value={registrationData.parish}*/}
+                                        {/*       onChange={(e) => handleChange(e, 'register')}*/}
+                                        {/*       className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'} required />*/}
+                                    </div>
+                                    <div className={'space-y-2'}>
+                                        <label className={'font-medium text-sm inline-block ml-1'}>Country</label>
+                                        <select name={'country'} value={registrationData.country} onChange={(e) => handleChange(e, 'register')}
+                                                className={'border border-[#564f39] p-3 w-full rounded-3xl bg-transparent text-white'}>
+                                            <option value={''} disabled>Choose a Country</option>
+                                            {COUNTRY.map(cat => (
+                                                <option key={cat} value={cat} className={'text-black'}>{cat}</option>
+                                            ))}
+                                        </select>
+                                        {/*<input type={'text'} placeholder={'Ocho Rios'} name={'country'} value={registrationData.country}*/}
+                                        {/*       onChange={(e) => handleChange(e, 'register')}*/}
+                                        {/*       className={'w-full bg-[#2a2a2a] p-2 rounded-2xl text-white/80'} required />*/}
+                                    </div>
                                 </div>
                                 <div className={'space-y-2'}>
                                     <label className={'text-sm font-medium inline-block ml-1'}>Email Address</label>

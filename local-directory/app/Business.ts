@@ -5,6 +5,7 @@ import {BusinessHours} from "@/app/BusinessHours";
 export interface Business {
     id: number;
     businessName: string;
+    slogan: string;
     category: string;
     city: string;
     description: string;

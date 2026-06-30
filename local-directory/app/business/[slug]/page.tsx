@@ -141,7 +141,8 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
                             <span className={'h-px w-12 bg-secondary-dark'}></span>
                             <h2 className={'text-secondary-dark text-xs font-black uppercase tracking-[0.3em]'}>The Story</h2>
                         </div>
-                        <h3 className={"text-4xl font-bold mb-6 tracking-tight"}>Authentic Flavors, <br/>Unrivaled Views.</h3>
+                        <h3 className={"text-4xl font-bold mb-6 tracking-tight"}>{business?.slogan}</h3>
+                        {/*<h3 className={"text-4xl font-bold mb-6 tracking-tight"}>Authentic Flavors, <br/>Unrivaled Views.</h3>*/}
                         <div className={'space-y-4 text-white/70 text-lg leading-relaxed font-light'}>
                             <p>{business?.about}</p>
                         </div>
