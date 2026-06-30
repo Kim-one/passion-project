@@ -53,34 +53,26 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
             try {
                 const {slug} = await params;
 
-                const userRes = await api.get('api/user');
-                setCurrentUser(userRes.data);
-                console.log(userRes.data);
-
                 const response = await api.get(`api/businesses/${slug}`);
-                console.log(response.data);
+                // console.log(response.data);
                 setBusiness(response.data);
                 console.log("Business object:", response.data);
-                console.log("Images:", response.data.images);
-                console.log("First image:", response.data.images?.[0]);
-
-
+                // console.log("Images:", response.data.images);
+                // console.log("First image:", response.data.images?.[0]);
 
                 const reviewsRes = await api.get(`api/businesses/${slug}/reviews`);
                 setReviews(reviewsRes.data);
                 console.log(reviewsRes.data);
+
+                const userRes = await api.get('api/user');
+                setCurrentUser(userRes.data);
+                console.log(userRes.data);
             } catch (err){
                 console.log(err);
             }
         }
         getBusiness();
     }, [params]);
-
-    const heroImage = business?.images?.[0];
-
-    if (!business) {
-        return <div>Loading...</div>;
-    }
 
     const formatTo12Hour = (timeString: string | null) => {
         if (!timeString) return '';
@@ -133,13 +125,7 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
             <div className={'max-w-7xl mx-auto px-6 py-8'}></div>
             <div className={'relative w-full h-[500px] rounded-xl overflow-hidden mb-12'}>
                 <div className={'absolute inset-0 bg-cover bg-center'}
-                     style={{
-                         backgroundImage: heroImage
-                             ? `url(https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${heroImage.path})`
-                             : undefined,
-                     }}
-                     // style={{backgroundImage: `url(https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${business?.images?.[0]?.path})`}}
-                ></div>
+                     style={{backgroundImage: `url(https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${business?.images?.[0]?.path})`}}></div>
                 <div className={'absolute bottom-10 left-10 right-10 flex flex-col items-start gap-2'}>
                     <div className={'flex items-center gap-2 px-3 py-1 bg-secondary-dark text-background-dark rounded-full text-[10px] font-black uppercase tracking-widest'}>
                         <MdOutlineVerified /> Featured Destination
@@ -166,7 +152,7 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
                             <h2 className={'text-secondary-dark text-xs font-black uppercase tracking-[0.3em]'}>The Atmosphere</h2>
                         </div>
                         <div className={'grid grid-cols-2 md:grid-cols-3 gap-4'}>
-                            {business?.images.map((pics, index) => (
+                            {business?.images?.map((pics, index) => (
                                 <div key={index} className={'aspect-square rounded-lg overflow-hidden emerald-frame group'}>
                                     <img src={`https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${pics.path}`} alt={'Res'}
                                          className={'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110'}/>
@@ -180,7 +166,7 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
                                 <span className={'h-px w-12 bg-secondary-dark'}></span>
                                 <h2 className={'text-secondary-dark text-xs font-black uppercase tracking-[0.3em]'}>Guest Reviews</h2>
                             </div>
-                            {currentUser && business && currentUser.id !== business.user_id && (
+                            {currentUser && business && currentUser.id !== business?.user_id && (
                                 <button onClick={() => setOpenWriteReview(prev => !prev)}
                                         className={'text-secondary-dark text-xs font-bold uppercase border-b border-secondary-dark/30 hover:border-secondary-dark'}>
                                     {openWriteReview ? 'Cancel' : 'Write a review'}
