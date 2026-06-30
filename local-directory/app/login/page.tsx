@@ -118,7 +118,7 @@ export default function LoginPage () {
         }
     }
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>, mode: string) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, mode: string) => {
         const { name, value } = e.target;
         if (mode === 'register') {
             setRegistrationData((prev) => ({
