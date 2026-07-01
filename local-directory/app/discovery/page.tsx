@@ -137,7 +137,7 @@ const Discoveries = () => {
                 <section className={'flex flex-col gap-8 w-72'}>
                     <div className={'flex justify-between tracking-tight text-sm text-gray-600 uppercase'}>
                         <p className={'text-xs font-black uppercase tracking-widest text-slate-500'}>Parishes</p>
-                        <button className={'text-secondary-dark text-xs font-bold hover:underline'}>Clear</button>
+                        <button onClick={() => setParish(null)} className={'text-secondary-dark text-xs font-bold hover:underline'}>Clear</button>
                     </div>
                     <div className={'flex flex-col gap-1'}>
                         {parishesWithCounts.map((item) => (

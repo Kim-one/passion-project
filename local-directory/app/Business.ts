@@ -22,7 +22,7 @@ export interface Business {
     phone: string | null;
     website: string | null;
     images: BusinessImage[];
-    socialLinks: BusinessSocialLinks[];
+    social_links: BusinessSocialLinks[];
     hours: BusinessHours[];
     created_at: string;
     updated_at: string;
