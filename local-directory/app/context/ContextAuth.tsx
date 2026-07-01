@@ -23,6 +23,8 @@ export { api };
 interface User {
     name: string;
     email: string;
+    parish: string;
+    country: string;
 }
 
 interface AuthContextType {
@@ -48,13 +50,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             try {
                 const response = await api.get('api/user');
                 const data = response.data;
-                setUser({
-                    name: data.name,
-                    email: data.email,
-                });
+                setUser({name: data.name, email: data.email, parish: data.parish, country: data.country});
             } catch (error) {
                 localStorage.removeItem('auth_token');
-                setUser(null);
+               setUser(null);
             } finally {
                 setLoading(false);
             }

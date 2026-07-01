@@ -30,6 +30,10 @@ export default function UserProfile() {
     const [loadingBusinesses, setLoadingBusinesses] = useState(false);
 
     useEffect(() => {
+        console.log("User from context:", user);
+    }, [user]);
+
+    useEffect(() => {
         if (activeTab === 'business'){
             const fetchBusinesses = async () => {
                 setLoadingBusinesses(true);
@@ -66,9 +70,7 @@ export default function UserProfile() {
                         <h1 className={'text-4xl font-bold mb-1'}>{user ? user.name : 'Loading'}</h1>
                         <p className={'flex items-center gap-2 text-secondary-dark font-medium'}>
                             <span className="material-symbols-outlined">verified</span>
-                            Local Explorer
-                            {/*- */}
-                            {/*{}, Jamaica*/}
+                            Local Explorer - {user ? user.parish : "Loading"}, {user ? user.country : "Loading"}
                         </p>
                     </div>
                     <div className={'absolute -bottom-14 right-10 size-[120px] bg-cover bg-center bg-no-repeat rounded-full border-[3px] border-green-600 shadow-2xl'}

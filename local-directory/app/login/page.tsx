@@ -95,6 +95,8 @@ export default function LoginPage () {
                 setUser({
                     name: u.name,
                     email: u.email,
+                    parish: u.parish,
+                    country: u.country,
                 });
             }
 
