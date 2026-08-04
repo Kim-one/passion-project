@@ -1,7 +1,7 @@
 'use client';
-import axios from 'axios';
 import {useEffect, useState} from "react";
 import {useAuth, api} from "@/app/context/ContextAuth";
+import {Business} from '@/app/Business';
 import Link from "next/link";
 
 // const api = axios.create({
@@ -13,42 +13,77 @@ import Link from "next/link";
 //     }
 // });
 
-interface Business {
+// interface Business {
+//     id: number;
+//     businessName: string;
+//     category: string;
+//     city: string;
+//     parish: string;
+//     description: string;
+//     slug: string;
+//     verified: boolean;
+// }
+interface SavedPlace {
     id: number;
-    businessName: string;
-    category: string;
-    city: string;
-    parish: string;
-    description: string;
-    slug: string;
-    verified: boolean;
+    business_id: number;
+    business: Business
 }
 export default function UserProfile() {
     const {user, logout} = useAuth();
+    const [savedIds, setSavedIds] = useState<Set<number>>(new Set());
     const [activeTab, setActiveTab] = useState('business');
     const [business, setBusiness] = useState<Business[]>([]);
     const [loadingBusinesses, setLoadingBusinesses] = useState(false);
+    const [savedBusinesses, setSavedBusinesses] = useState<SavedPlace[]>([]);
 
     useEffect(() => {
         console.log("User from context:", user);
     }, [user]);
 
     useEffect(() => {
-        if (activeTab === 'business'){
-            const fetchBusinesses = async () => {
-                setLoadingBusinesses(true);
-                try{
-                    const response = await api.get('/api/my-businesses');
-                    setBusiness(response.data);
-                } catch(err){
-                    console.log(err);
-                } finally {
-                    setLoadingBusinesses(false);
-                }
-            };
-            fetchBusinesses();
+        const fetchBusinesses = async () => {
+            setLoadingBusinesses(true);
+            try{
+                const response = await api.get('/api/my-businesses');
+                setBusiness(response.data);
+
+                // const savedPlacesRes = await api.get('/api/saved-places');
+                // setSavedBusinesses(savedPlacesRes.data);
+                // console.log("savedPlacesRes.data:", savedPlacesRes.data);
+            } catch(err){
+                console.log(err);
+            } finally {
+                setLoadingBusinesses(false);
+            }
+        };
+        fetchBusinesses();
+        const fetchSavedPlaces = async () => {
+            if (!user) return;
+            try {
+                const response = await api.get('/api/saved-places');
+                setSavedBusinesses(response.data);
+                const ids = new Set<number>(response.data.map((sp: any) => sp.business_id));
+                setSavedIds(ids);
+            } catch (err) {
+                console.log('Error fetching saved places:', err);
+            }
+        };
+        fetchSavedPlaces();
+    }, [activeTab, user]);
+
+    const handleUnsave = async (businessId: number) => {
+        try {
+            await api.delete(`/api/saved-places/${businessId}`);
+            setSavedBusinesses(prev => prev.filter(sp => sp.business.id !== businessId));
+            setSavedIds(prev => {
+                const next = new Set(prev);
+                next.delete(businessId);
+                return next;
+            });
+        } catch (err) {
+            console.log('Error unsaving business:', err);
         }
-    }, [activeTab]);
+    };
 
     const handleDeleteBusiness = async (deleteId:number) => {
         try {
@@ -85,10 +120,10 @@ export default function UserProfile() {
                                 <h1>Your Impact</h1>
                             </div>
                             <div className={'space-y-4'}>
-                                {/*<div className={'flex flex-col p-3 gap-1 rounded-[2rem] border border-secondary-dark/10 bg-background-dark'}>*/}
-                                {/*    <span className={'text-secondary-dark font-bold text-2xl'}>42</span>*/}
-                                {/*    <span className={'text-xs uppercase tracking-wider opacity-70'}>Saved Places</span>*/}
-                                {/*</div>*/}
+                                <div className={'flex flex-col p-3 gap-1 rounded-[2rem] border border-secondary-dark/10 bg-background-dark'}>
+                                    <span className={'text-secondary-dark font-bold text-2xl'}>{savedBusinesses.length}</span>
+                                    <span className={'text-xs uppercase tracking-wider opacity-70'}>Saved Places</span>
+                                </div>
                                 {/*<div className={'flex flex-col p-3 gap-1 rounded-[2rem] border border-secondary-dark/10 bg-background-dark'}>*/}
                                 {/*    <span className={'text-secondary-dark font-bold text-2xl'}>18</span>*/}
                                 {/*    <span className={'text-xs uppercase tracking-wider opacity-70'}>Reviews Written</span>*/}
@@ -101,10 +136,10 @@ export default function UserProfile() {
                         </div>
                         <div className={'bg-white/5 space-y-4 p-6 rounded-[2rem] border border-secondary-dark/5'}>
                             <h1 className={'mb-4 text-lg font-bold'}>Settings</h1>
-                            <div className={'flex item-center gap-3 p-2'}>
+                            <Link href={'/userProfile/edit'}  className={'flex item-center gap-3 p-2'}>
                                 <span className="material-symbols-outlined">person</span>
                                 <span className={'text-sm'}>Edit Profile</span>
-                            </div>
+                            </Link>
                             <div className={'flex item-center gap-3 p-2'}>
                                 <span className="material-symbols-outlined">notifications</span>
                                 <span className={'text-sm'}>Notifications</span>
@@ -117,89 +152,98 @@ export default function UserProfile() {
                     </div>
                     <div className={'col-span-3'}>
                         <div className={'flex border-b border-secondary-dark/10 mb-8'}>
-                            {/*<button onClick={() => setActiveTab('Saved')}*/}
-                            {/*        className={`text-sm px-6 py-4 ${activeTab ==='Saved' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'} flex items-center gap-3 cursor-pointer`}>*/}
-                            {/*    <span className="material-symbols-outlined">bookmark</span>*/}
-                            {/*    <span>Saved Places</span>*/}
-                            {/*</button>*/}
-                            {/*<button onClick={() => setActiveTab('reviews')}*/}
-                            {/*        className={`text-sm px-6 py-4 ${activeTab ==='reviews' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'}  flex items-center gap-3 cursor-pointer`}>*/}
-                            {/*    <span className="material-symbols-outlined">star</span>*/}
-                            {/*    <span>My Reviews</span>*/}
-                            {/*</button>*/}
                             <button onClick={() => setActiveTab('business')}
                                     className={`text-sm px-6 py-4 ${activeTab ==='business' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'} flex items-center gap-3 cursor-pointer`}>
                                 <span className="material-symbols-outlined">storefront</span>
                                 <span>My Businesses</span>
                             </button>
+                            <button onClick={() => setActiveTab('Saved')}
+                                    className={`text-sm px-6 py-4 ${activeTab ==='Saved' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'} flex items-center gap-3 cursor-pointer`}>
+                                <span className="material-symbols-outlined">bookmark</span>
+                                <span>Saved Places</span>
+                            </button>
+                            {/*<button onClick={() => setActiveTab('reviews')}*/}
+                            {/*        className={`text-sm px-6 py-4 ${activeTab ==='reviews' ? 'text-secondary-dark font-bold border-b-2 border-secondary-dark ' : 'text-slate-400 font-medium'}  flex items-center gap-3 cursor-pointer`}>*/}
+                            {/*    <span className="material-symbols-outlined">star</span>*/}
+                            {/*    <span>My Reviews</span>*/}
+                            {/*</button>*/}
                         </div>
                         <div>
                             {activeTab === 'Saved' &&(
                                 <div className={'flex flex-col gap-4'}>
                                     <div className={'grid grid-cols-3 gap-8'}>
-                                        <div className={'relative rounded-[2rem] flex flex-col bg-white/5'}>
-                                            <img src={'/images/restaurant.png'} alt={'Restaurant'} className={'rounded-t-[2rem] w-full object-cover h-[250px]'} />
-                                            <div className={'flex flex-col px-4 py-3'}>
-                                                <h1 className={'flex items-center justify-between font-bold text-lg mb-2'}>
-                                                    Rockhouse Restaurant
-                                                    <span className="material-symbols-outlined text-secondary-dark">bookmark</span>
-                                                </h1>
-                                                <p className={'flex items-center gap-1 mb-4'}>
-                                                    <span className="material-symbols-outlined text-secondary-dark" style={{fontSize: '14px'}}>star</span>
-                                                    <span className={'text-secondary-dark text-sm font-bold'}>4.8</span>
-                                                    <span className={'text-slate-500 text-xs ml-1'}>(120 reviews)</span>
-                                                </p>
-                                                <p className={'text-slate-400 text-sm mb-4 line-clamp-2'}>
-                                                    World-class dining on the cliffs of Negril with Authentic Jamaican flavours.
-                                                </p>
-                                                <div className={'flex items-center gap-1 text-slate-500 text-xs'}>
-                                                    <span className="material-symbols-outlined" style={{fontSize: '14px'}}>location_on</span>
-                                                    <span>Negril, Jamaica</span>
+                                        {savedBusinesses.map((sp) => {
+                                            const biz = sp.business;
+                                            if (!biz) return null;
+
+                                            return (
+                                                <div key={sp.id} className={'relative rounded-[2rem] flex flex-col bg-white/5'}>
+                                                    <img src={`https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${biz.images[0].path}`} alt={'Restaurant'} className={'rounded-t-[2rem] w-full object-cover h-[250px]'} />
+                                                    <div className={'flex flex-col px-4 py-3'}>
+                                                        <h1 className={'flex items-center justify-between font-bold text-lg mb-2'}>
+                                                            {biz.businessName}
+                                                            <span onClick={() => handleUnsave(biz.id)} className="material-symbols-outlined text-secondary-dark">bookmark</span>
+                                                        </h1>
+                                                        <p className={'flex items-center gap-1 mb-4'}>
+                                                            <span className="material-symbols-outlined text-secondary-dark" style={{fontSize: '14px'}}>star</span>
+                                                            <span className={'text-secondary-dark text-sm font-bold'}>{biz.rating}</span>
+                                                            <span className={'text-slate-500 text-xs ml-1'}>({biz.reviewCount} reviews)</span>
+                                                        </p>
+                                                        <p className={'text-slate-400 text-sm mb-4 line-clamp-2'}>
+                                                            {biz.description}
+                                                            {/*World-class dining on the cliffs of Negril with Authentic Jamaican flavours.*/}
+                                                        </p>
+                                                        <div className={'flex items-center gap-1 text-slate-500 text-xs'}>
+                                                            <span className="material-symbols-outlined" style={{fontSize: '14px'}}>location_on</span>
+                                                            <span>{biz.city}, Jamaica</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className={'relative rounded-[2rem] flex flex-col bg-white/5'}>
-                                            <img src={'/images/restaurant.png'} alt={'Restaurant'} className={'rounded-t-[2rem] w-full object-cover h-[250px]'} />
-                                            <div className={'flex flex-col px-4 py-3'}>
-                                                <h1 className={'flex items-center justify-between font-bold text-lg mb-2'}>
-                                                    Rockhouse Restaurant
-                                                    <span className="material-symbols-outlined text-secondary-dark">bookmark</span>
-                                                </h1>
-                                                <p className={'flex items-center gap-1 mb-4'}>
-                                                    <span className="material-symbols-outlined text-secondary-dark" style={{fontSize: '14px'}}>star</span>
-                                                    <span className={'text-secondary-dark text-sm font-bold'}>4.8</span>
-                                                    <span className={'text-slate-500 text-xs ml-1'}>(120 reviews)</span>
-                                                </p>
-                                                <p className={'text-slate-400 text-sm mb-4 line-clamp-2'}>
-                                                    World-class dining on the cliffs of Negril with Authentic Jamaican flavours.
-                                                </p>
-                                                <div className={'flex items-center gap-1 text-slate-500 text-xs'}>
-                                                    <span className="material-symbols-outlined" style={{fontSize: '14px'}}>location_on</span>
-                                                    <span>Negril, Jamaica</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className={'relative rounded-[2rem] flex flex-col bg-white/5'}>
-                                            <img src={'/images/restaurant.png'} alt={'Restaurant'} className={'rounded-t-[2rem] w-full object-cover h-[250px]'} />
-                                            <div className={'flex flex-col px-4 py-3'}>
-                                                <h1 className={'flex items-center justify-between font-bold text-lg mb-2'}>
-                                                    Rockhouse Restaurant
-                                                    <span className="material-symbols-outlined text-secondary-dark">bookmark</span>
-                                                </h1>
-                                                <p className={'flex items-center gap-1 mb-4'}>
-                                                    <span className="material-symbols-outlined text-secondary-dark" style={{fontSize: '14px'}}>star</span>
-                                                    <span className={'text-secondary-dark text-sm font-bold'}>4.8</span>
-                                                    <span className={'text-slate-500 text-xs ml-1'}>(120 reviews)</span>
-                                                </p>
-                                                <p className={'text-slate-400 text-sm mb-4 line-clamp-2'}>
-                                                    World-class dining on the cliffs of Negril with Authentic Jamaican flavours.
-                                                </p>
-                                                <div className={'flex items-center gap-1 text-slate-500 text-xs'}>
-                                                    <span className="material-symbols-outlined" style={{fontSize: '14px'}}>location_on</span>
-                                                    <span>Negril, Jamaica</span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                            )
+                                        })}
+
+                                        {/*<div className={'relative rounded-[2rem] flex flex-col bg-white/5'}>*/}
+                                        {/*    <img src={'/images/restaurant.png'} alt={'Restaurant'} className={'rounded-t-[2rem] w-full object-cover h-[250px]'} />*/}
+                                        {/*    <div className={'flex flex-col px-4 py-3'}>*/}
+                                        {/*        <h1 className={'flex items-center justify-between font-bold text-lg mb-2'}>*/}
+                                        {/*            Rockhouse Restaurant*/}
+                                        {/*            <span className="material-symbols-outlined text-secondary-dark">bookmark</span>*/}
+                                        {/*        </h1>*/}
+                                        {/*        <p className={'flex items-center gap-1 mb-4'}>*/}
+                                        {/*            <span className="material-symbols-outlined text-secondary-dark" style={{fontSize: '14px'}}>star</span>*/}
+                                        {/*            <span className={'text-secondary-dark text-sm font-bold'}>4.8</span>*/}
+                                        {/*            <span className={'text-slate-500 text-xs ml-1'}>(120 reviews)</span>*/}
+                                        {/*        </p>*/}
+                                        {/*        <p className={'text-slate-400 text-sm mb-4 line-clamp-2'}>*/}
+                                        {/*            World-class dining on the cliffs of Negril with Authentic Jamaican flavours.*/}
+                                        {/*        </p>*/}
+                                        {/*        <div className={'flex items-center gap-1 text-slate-500 text-xs'}>*/}
+                                        {/*            <span className="material-symbols-outlined" style={{fontSize: '14px'}}>location_on</span>*/}
+                                        {/*            <span>Negril, Jamaica</span>*/}
+                                        {/*        </div>*/}
+                                        {/*    </div>*/}
+                                        {/*</div>*/}
+                                        {/*<div className={'relative rounded-[2rem] flex flex-col bg-white/5'}>*/}
+                                        {/*    <img src={'/images/restaurant.png'} alt={'Restaurant'} className={'rounded-t-[2rem] w-full object-cover h-[250px]'} />*/}
+                                        {/*    <div className={'flex flex-col px-4 py-3'}>*/}
+                                        {/*        <h1 className={'flex items-center justify-between font-bold text-lg mb-2'}>*/}
+                                        {/*            Rockhouse Restaurant*/}
+                                        {/*            <span className="material-symbols-outlined text-secondary-dark">bookmark</span>*/}
+                                        {/*        </h1>*/}
+                                        {/*        <p className={'flex items-center gap-1 mb-4'}>*/}
+                                        {/*            <span className="material-symbols-outlined text-secondary-dark" style={{fontSize: '14px'}}>star</span>*/}
+                                        {/*            <span className={'text-secondary-dark text-sm font-bold'}>4.8</span>*/}
+                                        {/*            <span className={'text-slate-500 text-xs ml-1'}>(120 reviews)</span>*/}
+                                        {/*        </p>*/}
+                                        {/*        <p className={'text-slate-400 text-sm mb-4 line-clamp-2'}>*/}
+                                        {/*            World-class dining on the cliffs of Negril with Authentic Jamaican flavours.*/}
+                                        {/*        </p>*/}
+                                        {/*        <div className={'flex items-center gap-1 text-slate-500 text-xs'}>*/}
+                                        {/*            <span className="material-symbols-outlined" style={{fontSize: '14px'}}>location_on</span>*/}
+                                        {/*            <span>Negril, Jamaica</span>*/}
+                                        {/*        </div>*/}
+                                        {/*    </div>*/}
+                                        {/*</div>*/}
                                     </div>
                                     <div className={'w-full flex gap-3 items-center justify-center'}>
                                         <div className={'rounded-full px-5 py-3 bg-slate-600'}>
@@ -250,8 +294,14 @@ export default function UserProfile() {
                                                         <span>{biz.city}, {biz.parish}</span>
                                                     </div>
                                                     <div className={'flex items-center justify-between mt-2'}>
-                                                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${biz.verified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                                                            {biz.verified ? 'Verified' : 'Pending Review'}</span>
+                                                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                                                            biz.status === 'approved' ? 'bg-green-500/20 text-green-400'
+                                                                : biz.status === 'rejected' ? 'bg-red-500/20 text-red-400'
+                                                                    : 'bg-yellow-500/20 text-yellow-400'
+                                                        }`}>
+                                                            {biz.status === 'approved' ? 'Approved'
+                                                                : biz.status === 'rejected' ? 'Rejected'
+                                                                    : 'Pending Review'}</span>
                                                         <div className={'flex items-center gap-3'}>
                                                             <Link href={`/business/${biz.slug}/edit`} className={'text-slate-400 text-xs font-bold hover:text-white'}>
                                                                 Edit
@@ -264,6 +314,11 @@ export default function UserProfile() {
                                                             </Link>
                                                         </div>
                                                     </div>
+                                                    {biz.status === 'rejected' && biz.rejection_reason && (
+                                                        <p className={'text-xs text-red-300 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2'}>
+                                                            <span className={'font-bold'}>Reason:</span> {biz.rejection_reason}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             ))}
                                         </div>

@@ -25,6 +25,7 @@ interface User {
     email: string;
     parish: string;
     country: string;
+    is_admin: boolean;
 }
 
 interface AuthContextType {
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             try {
                 const response = await api.get('api/user');
                 const data = response.data;
-                setUser({name: data.name, email: data.email, parish: data.parish, country: data.country});
+                setUser({name: data.name, email: data.email, parish: data.parish, country: data.country, is_admin: !!data.is_admin});
             } catch (error) {
                 localStorage.removeItem('auth_token');
                setUser(null);

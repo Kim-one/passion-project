@@ -3,7 +3,7 @@ import React, {useRef, useState} from "react";
 import { GrInstagram } from "react-icons/gr";
 import { FaFacebookF } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import {useRouter} from "next/navigation";
+import Link from "next/link";
 import { api } from '@/app/context/ContextAuth';
 
 // const api = axios.create({
@@ -59,7 +59,6 @@ const PARISHES = [
 ];
 
 const AddBusiness = () => {
-    const router = useRouter();
     const [formData, setFormData] = useState({
         businessName: '',
         category: '',
@@ -81,6 +80,7 @@ const AddBusiness = () => {
     })
 
     const [error, setError] = useState('')
+    const [submitted, setSubmitted] = useState(false)
 
     // Handle images
     const [heroFile, setHeroFile] = useState<File | null>(null);
@@ -187,12 +187,42 @@ const AddBusiness = () => {
                 headers: {'Content-Type': 'multipart/form-data'}
             });
             console.log(response.data);
-            router.push('/userProfile');
+            setError('');
+            setSubmitted(true);
+            window.scrollTo({top: 0, behavior: 'smooth'});
         } catch(err: any) {
             console.log(err);
             setError(err.response?.data?.message);
         }
     };
+
+    if (submitted) {
+        return (
+            <div suppressHydrationWarning className={'bg-charcoal min-h-screen flex flex-col items-center justify-center px-6'}>
+                <div className={'flex flex-col items-center text-center max-w-lg bg-surface-form-light border border-surface-dark rounded-3xl p-10 gap-4'}>
+                    <div className={'flex items-center justify-center size-20 rounded-full bg-secondary-dark/15 border border-secondary-dark/30 mb-2'}>
+                        <span className="material-symbols-outlined text-secondary-dark" style={{fontSize: 44}}>hourglass_top</span>
+                    </div>
+                    <h1 className={'text-white text-3xl font-black tracking-tight'}>Submitted for Review</h1>
+                    <p className={'text-slate-300'}>
+                        Thanks{formData.businessName ? `, ${formData.businessName}` : ''} is now pending review.
+                        Our team will check it over before it goes live on the discovery page. You&apos;ll be able to see
+                        its status any time under <span className={'text-secondary-dark font-semibold'}>My Businesses</span>.
+                    </p>
+                    <div className={'flex flex-wrap items-center justify-center gap-3 mt-4'}>
+                        <Link href={'/userProfile'}
+                              className={'bg-secondary-dark text-black font-bold px-6 py-3 rounded-full hover:brightness-110'}>
+                            Go to My Businesses
+                        </Link>
+                        <Link href={'/discovery'}
+                              className={'border border-white/15 text-white font-bold px-6 py-3 rounded-full hover:bg-white/5'}>
+                            Browse Discovery
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div suppressHydrationWarning className={'bg-charcoal h-screen flex flex-col items-center overflow-y-auto'}>

@@ -6,7 +6,9 @@ import StarRating from "@/app/StarRating";
 import {Business} from "@/app/Business";
 import {CiLocationOn} from "react-icons/ci";
 import {IoIosArrowBack, IoIosArrowForward} from "react-icons/io";
-import {api} from "@/app/context/ContextAuth";
+import {api, useAuth} from "@/app/context/ContextAuth";
+import {useSearchParams} from "next/navigation";
+import {Categories} from "@/app/Categories";
 
 // const api = axios.create({
 //     baseURL: 'https://web-production-0fb7e.up.railway.app',
@@ -80,7 +82,12 @@ const PARISHES = [
 const FILTERS = ['Trending', 'Highly Rated','Recently Added', '$0 - $100']
 
 const Discoveries = () => {
+    const { user } = useAuth();
+    const searchParams = useSearchParams();
+    const initialCategory = searchParams.get('category');
+    const [savedIds, setSavedIds] = useState<Set<number>>(new Set());
     const [parish, setParish] = useState<string | null>(null);
+    const [category, setCategory] = useState<string | null>(initialCategory);
     const [filter, setFilter] = useState('Trending')
     const [currPage, setCurrPage] = useState(1)
     const [allBusinesses, setAllBusinesses] = useState<Business[]>([])
@@ -109,13 +116,29 @@ const Discoveries = () => {
         options: parishCounts[p.parish] || 0,
     }));
 
+    const categoryCounts = allBusinesses.reduce((acc, biz) => {
+        if (biz.category) acc[biz.category] = (acc[biz.category] || 0) + 1;
+        return acc;
+    }, {} as Record<string, number>);
+
+    const categoriesWithCounts = Categories.map(c => ({
+        name: c,
+        count: categoryCounts[c.category] || 0,
+    }));
+
     const parishes = Object.entries(parishCounts)
         .map(([name, count]) => ({name, count}))
         .sort((a, b) => b.count - a.count);
 
-    const filteredBusinesses = parish
-        ? allBusinesses.filter(b => b.parish === parish)
-        : allBusinesses;
+    const filteredBusinesses = allBusinesses.filter(b => {
+        const matchParishes = parish ? b.parish === parish : true;
+        const matchCategory = category ? b.category === category : true;
+        return matchParishes && matchCategory;
+    })
+
+        // parish
+        // ? allBusinesses.filter(b => b.parish === parish || b.category == category)
+        // : allBusinesses;
 
     const BUSINESS_PER_PAGE = 6
     // const total_pages = Math.ceil(FILTER_BUSINESSES.length / BUSINESS_PER_PAGE)
@@ -129,6 +152,60 @@ const Discoveries = () => {
 
     console.log("All Businesses",currentBusinesses);
 
+    useEffect(() => {
+        const fetchSavedPlaces = async () => {
+            if (!user) return;
+            try {
+                const response = await api.get('/api/saved-places');
+                const ids = new Set(response.data.map((sp: any) => sp.business_id));
+
+                // @ts-ignore
+                setSavedIds(ids);
+            } catch (err) {
+                console.log('Error fetching saved places:', err);
+            }
+        };
+        fetchSavedPlaces();
+    }, [user]);
+
+    const handleSaveBusiness = async (businessId: number) => {
+        if (!user) {
+            return;
+        }
+
+        const isSaved = savedIds.has(businessId);
+
+        setSavedIds(prev => {
+            const next = new Set(prev);
+            if (isSaved) {
+                next.delete(businessId);
+            } else {
+                next.add(businessId);
+            }
+            return next;
+        });
+
+        try {
+            if (isSaved) {
+                await api.delete(`/api/saved-places/${businessId}`);
+            } else {
+                await api.post('/api/saved-places', { business_id: businessId });
+            }
+        } catch (err) {
+            console.log('Error toggling saved place:', err);
+
+            setSavedIds(prev => {
+                const next = new Set(prev);
+                if (isSaved) {
+                    next.add(businessId);
+                } else {
+                    next.delete(businessId);
+                }
+                return next;
+            });
+        }
+    };
+
 
     return (
         <div className={'bg-charcoal h-full text-white max-w-full mx-auto flex gap-8 p-6'}>
@@ -136,9 +213,10 @@ const Discoveries = () => {
             <aside className={''}>
                 <section className={'flex flex-col gap-8 w-72'}>
                     <div className={'flex justify-between tracking-tight text-sm text-gray-600 uppercase'}>
-                        <p className={'text-xs font-black uppercase tracking-widest text-slate-500'}>Parishes</p>
+                        <p className={'text-xs font-black uppercase tracking-widest text-slate-500'}>Filters</p>
                         <button onClick={() => setParish(null)} className={'text-secondary-dark text-xs font-bold hover:underline'}>Clear</button>
                     </div>
+
                     <div className={'flex flex-col gap-1'}>
                         {parishesWithCounts.map((item) => (
                             <label key={item.id}
@@ -147,6 +225,22 @@ const Discoveries = () => {
                                 <span className={"material-symbols-outlined !text-sm text-slate-400"}>location_on</span>
                                 <span className={`${parish === item.parish ? 'font-bold text-secondary-dark' : 'font-medium'} text-sm `}>{item.parish}</span>
                                 <span className={`${parish === item.parish ? 'bg-secondary-dark text-background-darker px-1.5 rounded-md font-bold' : 'text-slate-500'} ml-auto text-xs `}>{item.options}</span>
+                            </label>
+                        ))}
+                    </div>
+                    <div className={'flex justify-between tracking-tight text-sm text-gray-600 uppercase'}>
+                        <p className={'text-xs font-black uppercase tracking-widest text-slate-500'}>Category</p>
+                        <button onClick={() => setCategory(null)} className={'text-secondary-dark text-xs font-bold hover:underline'}>Clear</button>
+                    </div>
+                    <div className={'flex flex-col gap-1'}>
+                        {categoriesWithCounts.map((cat) => (
+                            <label
+                                key={cat.name.id}
+                                onClick={() => setCategory(prev => prev === cat.name.category ? null : cat.name.category)}
+                                className={`flex items-center gap-3 p-3 rounded-xl ${category === cat.name.category ? 'bg-secondary-dark/10 border border-secondary-dark/20' : 'bg-surface-darker'}  cursor-pointer group`}
+                            >
+                                <span className={`${category === cat.name.category ? 'font-bold text-secondary-dark' : 'font-medium'} text-sm `}>{cat.name.label}</span>
+                                <span className={`${category === cat.name.category ? 'bg-secondary-dark text-background-darker px-1.5 rounded-md font-bold' : 'text-slate-500'} ml-auto text-xs `}>{cat.count}</span>
                             </label>
                         ))}
                     </div>
@@ -160,14 +254,14 @@ const Discoveries = () => {
                                 <span className={'italic text-secondary-dark'}> Excellence</span></h2>
                             <p className={'text-slate-500 max-w-lg'}>Handpicked selection of the most authentic businesses across 14 parishes of Jamaica.</p>
                         </div>
-                        <div className={'flex items-center gap-2 bg-surface-dark p-1 rounded-xl'}>
-                            <button className={'p-2 rounded-lg bg-background-dark text-primary shadow-lg'}>
-                                <span className="material-symbols-outlined">grid_view</span>
-                            </button>
-                            <button className={'p-2 rounded-lg hover:bg-background-dark text-slate-500 transition-colors'}>
-                                <span className="material-symbols-outlined">map</span>
-                            </button>
-                        </div>
+                        {/*<div className={'flex items-center gap-2 bg-surface-dark p-1 rounded-xl'}>*/}
+                        {/*    <button className={'p-2 rounded-lg bg-background-dark text-primary shadow-lg'}>*/}
+                        {/*        <span className="material-symbols-outlined">grid_view</span>*/}
+                        {/*    </button>*/}
+                        {/*    <button className={'p-2 rounded-lg hover:bg-background-dark text-slate-500 transition-colors'}>*/}
+                        {/*        <span className="material-symbols-outlined">map</span>*/}
+                        {/*    </button>*/}
+                        {/*</div>*/}
                     </div>
                     <div className={'flex flex-wrap gap-3'}>
                         {FILTERS.map((item,index) => (
@@ -191,8 +285,11 @@ const Discoveries = () => {
                                 <div className={'absolute top-4 left-4 bg-secondary-dark text-background-dark text-[10px] font-black uppercase px-2 py-0.5 rounded tracking-tighter'}>
                                     {item.featured &&(<p>Featured</p>)}
                                 </div>
-                                <button className={'absolute top-4 right-4 h-10 w-10 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-md text-white hover:text-secondary-dark transition-color'}>
-                                    <span className="material-symbols-outlined">favorite</span>
+                                <button onClick={() => handleSaveBusiness(item.id)}
+                                        className={`absolute top-4 right-4 h-10 w-10 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-md transition-color ${
+                                            savedIds.has(item.id) ? 'text-secondary-dark' : 'text-white hover:text-secondary-dark'}`}>
+                                    <span className="material-symbols-outlined" style={{ fontVariationSettings: savedIds.has(item.id) ? "'FILL' 1" : "'FILL' 0" }}>
+                                        favorite</span>
                                 </button>
                                 {/*RATING - STARS*/}
                                 <div className={'absolute bottom-4 left-4 flex gap-1'}>

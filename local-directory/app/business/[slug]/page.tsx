@@ -123,6 +123,32 @@ export default  function BusinessPage({params}:{params: Promise<{slug: string}>}
     return (
         <div className={'bg-charcoal h-full text-white max-w-full mx-auto gap-8 p-6'}>
             <div className={'max-w-7xl mx-auto px-6 py-8'}></div>
+            {business && business.status !== 'approved' && (
+                <div className={`mb-8 rounded-2xl px-6 py-4 flex items-start gap-4 border ${
+                    business.status === 'rejected'
+                        ? 'bg-red-500/10 border-red-500/25'
+                        : 'bg-yellow-400/10 border-yellow-400/25'
+                }`}>
+                    <span className={`material-symbols-outlined ${business.status === 'rejected' ? 'text-red-300' : 'text-yellow-300'}`}>
+                        {business.status === 'rejected' ? 'block' : 'visibility_off'}
+                    </span>
+                    <div>
+                        <p className={`font-bold ${business.status === 'rejected' ? 'text-red-200' : 'text-yellow-200'}`}>
+                            {business.status === 'rejected'
+                                ? 'This listing was rejected — visible only to you'
+                                : 'Pending review — visible only to you'}
+                        </p>
+                        <p className={'text-sm text-white/60 mt-0.5'}>
+                            {business.status === 'rejected'
+                                ? 'It won’t appear on the discovery page. '
+                                : 'It won’t appear on the discovery page until an admin approves it. '}
+                            {business.status === 'rejected' && business.rejection_reason && (
+                                <span className={'text-red-200'}>Reason: {business.rejection_reason}</span>
+                            )}
+                        </p>
+                    </div>
+                </div>
+            )}
             <div className={'relative w-full h-[500px] rounded-xl overflow-hidden mb-12'}>
                 <div className={'absolute inset-0 bg-cover bg-center'}
                      style={{backgroundImage: `url(https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${business?.images?.[0]?.path})`}}></div>

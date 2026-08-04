@@ -97,6 +97,7 @@ export default function LoginPage () {
                     email: u.email,
                     parish: u.parish,
                     country: u.country,
+                    is_admin: !!u.is_admin,
                 });
             }
 

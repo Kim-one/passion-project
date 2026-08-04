@@ -9,9 +9,9 @@ const  Footer = () => {
             </div>
             <div className={'flex gap-8 text-sm font bold'}>
                 <Link className={'text-slate-400 '} href={'/about'}>About Us</Link>
-                <Link className={'text-slate-400 '} href={'/about'}>Privacy Policy</Link>
-                <Link className={'text-slate-400 '} href={'/about'}>Terms of Service</Link>
-                <Link className={'text-slate-400 '} href={'/about'}>Contact</Link>
+                <Link className={'text-slate-400 '} href={'/privacy-policy'}>Privacy Policy</Link>
+                <Link className={'text-slate-400 '} href={'/terms-of-service'}>Terms of Service</Link>
+                <Link className={'text-slate-400 '} href={'/contact'}>Contact</Link>
             </div>
         </div>
     )

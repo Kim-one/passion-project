@@ -12,6 +12,23 @@
     --color-surface-dark : #2C2C2E;
     --color-surface-darker: #161d16;
     --color-surface-form-light: #28241b;
+    --color-outline-variant : #504532;
+    --color-on-surface-variant : #d4c5ab;
+    --color-surface-bright : #3f382d;
+    --color-on-primary-container : #6d5000;
+    --color-on-surface : #ede1d0;
+    --text-headline-lg: 36px;
+    --text-headline-lg--line-height: 1.2;
+    --text-headline-lg--font-weight: 700;
+    --text-headline-lg--letter-spacing: -0.02em;
+
+    --text-section-label: 12px;
+    --text-section-label--line-height: 1;
+    --text-section-label--letter-spacing: 0.3em;
+    --text-section-label--font-weight: 900;
+
+/*"section-label": ["12px", {"lineHeight": "1", "letterSpacing": "0.3em", "fontWeight": "900"}],*/
+/*"headline-lg": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],*/
 }
 
 .material-symbols-outlined {
@@ -41,4 +58,15 @@
 .fill-bolt {
     font-variation-settings: 'FILL' 1;
     /*color: #ffbf00;*/
+}
+
+.glass-section {
+    background: rgba(44, 44, 44, 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 191, 0, 0.1);
+    box-shadow: 0 0 15px rgba(255, 191, 0, 0.03);
+}
+
+.gap-section {
+    gap: 4rem;
 }

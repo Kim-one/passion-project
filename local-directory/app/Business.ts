@@ -17,6 +17,9 @@ export interface Business {
     reviewCount: number;
     featured: boolean;
     verified: boolean;
+    status: 'pending' | 'approved' | 'rejected';
+    rejection_reason: string | null;
+    reviewed_at: string | null;
     about: string | null;
     email: string | null;
     phone: string | null;
