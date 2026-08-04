@@ -66,7 +66,7 @@ const NavBar = () => {
                             className="h-10 w-10 rounded-full border-2 border-secondary-dark overflow-hidden"
                         >
                             <img
-                                src="/images/ProfilePic.png"
+                                src={user.avatar ? `https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${user.avatar}` : "/images/ProfilePic.png"}
                                 className="w-full h-full object-cover"
                                 alt="Profile"
                             />

@@ -94,9 +94,12 @@ export default function LoginPage () {
                 const u = response.data.user;
                 setUser({
                     name: u.name,
+                    firstName: u.firstName,
+                    lastName: u.lastName,
                     email: u.email,
                     parish: u.parish,
                     country: u.country,
+                    avatar: u.avatar,
                     is_admin: !!u.is_admin,
                 });
             }

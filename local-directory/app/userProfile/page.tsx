@@ -109,7 +109,7 @@ export default function UserProfile() {
                         </p>
                     </div>
                     <div className={'absolute -bottom-14 right-10 size-[120px] bg-cover bg-center bg-no-repeat rounded-full border-[3px] border-green-600 shadow-2xl'}
-                         style={{backgroundImage: 'url(/images/ProfilePic.png)'}}>
+                         style={{backgroundImage: `url(${user?.avatar ? `https://pub-b83351aa0dd34354a7dc8614f98ab703.r2.dev/${user.avatar}` : '/images/ProfilePic.png'})`}}>
                     </div>
                 </div>
                 <div className={'grid grid-cols-4 gap-10'}>

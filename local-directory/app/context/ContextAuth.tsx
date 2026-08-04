@@ -22,9 +22,12 @@ export { api };
 
 interface User {
     name: string;
+    firstName?: string;
+    lastName?: string;
     email: string;
     parish: string;
     country: string;
+    avatar?: string | null;
     is_admin: boolean;
 }
 
@@ -51,7 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             try {
                 const response = await api.get('api/user');
                 const data = response.data;
-                setUser({name: data.name, email: data.email, parish: data.parish, country: data.country, is_admin: !!data.is_admin});
+                setUser({name: data.name, firstName: data.firstName, lastName: data.lastName, email: data.email, parish: data.parish, country: data.country, avatar: data.avatar, is_admin: !!data.is_admin});
             } catch (error) {
                 localStorage.removeItem('auth_token');
                setUser(null);
